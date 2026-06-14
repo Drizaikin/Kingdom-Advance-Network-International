@@ -1,0 +1,57 @@
+/* styles/programs.css */
+.programs-hero {
+    min-height: 50vh;
+    display: flex;
+    align-items: center;
+    background: var(--gradient-teal);
+    color: var(--white);
+    padding-top: 80px;
+}
+
+.programs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    margin-top: -60px;
+    position: relative;
+    z-index: 2;
+}
+
+.program-card {
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    transition: transform 0.3s ease;
+}
+
+.program-card:hover {
+    transform: translateY(-10px);
+}
+
+.program-image {
+    height: 200px;
+    background: var(--primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: var(--white);
+}
+
+.program-content {
+    padding: 32px;
+}
+
+.program-title {
+    font-family: var(--font-heading);
+    color: var(--primary);
+    font-size: 1.5rem;
+    margin-bottom: 16px;
+}
+
+.program-desc {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 24px;
+}

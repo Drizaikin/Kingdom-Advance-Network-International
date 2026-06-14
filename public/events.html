@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events | KANI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/variables.css">
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/animations.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/navigation.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    <link rel="stylesheet" href="styles/events.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-icon">✦</span>
+                <span class="logo-text">KANI</span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-dropdown">
+                    <a href="about.html" class="nav-link">About</a>
+                    <div class="dropdown-menu">
+                        <a href="about.html" class="dropdown-link">About KANI</a>
+                        <a href="founder.html" class="dropdown-link">The Founder</a>
+                    </div>
+                </li>
+                <li><a href="programs.html" class="nav-link">Programs</a></li>
+                <li><a href="events.html" class="nav-link active">Events</a></li>
+                <li><a href="missions.html" class="nav-link">Missions</a></li>
+                <li><a href="partnership.html" class="nav-link">Partnership</a></li>
+                <li><a href="contact.html" class="nav-link">Contact</a></li>
+            </ul>
+            <a href="give.html" class="btn btn-primary nav-cta">Give Now</a>
+        </div>
+    </nav>
+
+    <main>
+        <section class="page-hero events-hero">
+            <div class="container text-center" data-aos="fade-up">
+                <h1 class="hero-home-title text-white">Upcoming <span style="color: var(--gold);">Events</span></h1>
+                <p class="hero-home-subtitle text-muted" style="margin: 0 auto;">Join us as we gather to encounter God and advance His kingdom.</p>
+            </div>
+        </section>
+
+        <section class="section section-dark" style="padding-top: 0;">
+            <div class="container">
+                <div class="featured-event" data-aos="fade-up">
+                    <div class="featured-event-content">
+                        <div class="card-badge" style="display:inline-block; margin-bottom: 16px;">Next Major Event</div>
+                        <h2 style="font-family: var(--font-heading); font-size: 2.5rem; margin-bottom: 16px;">Global Impact Conference</h2>
+                        <p style="color: var(--text-muted); font-size: 1.1rem; line-height: 1.6;">A defining moment for believers worldwide. Three days of apostolic teaching, prophetic ministry, and kingdom empowerment.</p>
+                        
+                        <div class="countdown-container countdown-timer" data-date="2024-12-31T00:00:00">
+                            <!-- Populated by JS -->
+                        </div>
+                        
+                        <a href="#" class="btn btn-primary">Register Now</a>
+                    </div>
+                    <div class="featured-event-image">🌍</div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="js/components.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
+

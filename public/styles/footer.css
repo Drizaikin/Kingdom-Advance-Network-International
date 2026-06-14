@@ -1,0 +1,285 @@
+/* KANI Premium Web Experience - Footer Stylesheet */
+
+/* ==========================================================================
+   1. FOOTER CTA SECTION (Top Royal Gradient Banner)
+   ========================================================================== */
+.footer-cta-section {
+  background: var(--gradient-royal);
+  padding: 80px 0;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footer-cta-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(rgba(212, 160, 23, 0.15) 1px, transparent 1px);
+  background-size: 30px 30px;
+  opacity: 0.4;
+  z-index: 1;
+}
+
+.footer-cta-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.footer-cta-title {
+  font-family: var(--font-display);
+  font-weight: var(--fw-black);
+  font-size: var(--fs-h2);
+  color: var(--white);
+  margin-bottom: var(--space-md);
+  line-height: 1.2;
+}
+
+.footer-cta-text {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: var(--fs-body-lg);
+  line-height: 1.6;
+  margin-bottom: var(--space-xl);
+  max-width: 650px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.footer-cta-content .btn-group {
+  justify-content: center;
+}
+
+/* ==========================================================================
+   2. MAIN FOOTER (Background, Grid, Layout)
+   ========================================================================== */
+.footer {
+  background-color: var(--midnight);
+  color: var(--text-light);
+  font-family: var(--font-body);
+  position: relative;
+  z-index: 1;
+}
+
+.footer-main {
+  padding: 80px 0 60px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 2fr;
+  gap: var(--space-2xl);
+}
+
+.footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* ==========================================================================
+   3. COL 1: ABOUT KANI & SOCIAL LINKS
+   ========================================================================== */
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  text-decoration: none;
+  margin-bottom: var(--space-xs);
+}
+
+.footer-tagline {
+  font-family: var(--font-body);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-caption);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--gold);
+  margin-top: -10px;
+  margin-bottom: var(--space-xs);
+}
+
+.footer-description {
+  font-size: var(--fs-body-sm);
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.footer-social {
+  display: flex;
+  gap: var(--space-md);
+  margin-top: var(--space-sm);
+}
+
+.social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-round);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--white);
+  background: rgba(255, 255, 255, 0.02);
+  transition: all var(--transition-base);
+}
+
+.social-link:hover,
+.social-link:focus {
+  color: var(--gold);
+  border-color: var(--gold);
+  background: rgba(212, 160, 23, 0.1);
+  box-shadow: var(--shadow-glow-gold);
+  transform: translateY(-3px);
+  outline: none;
+}
+
+.social-link svg {
+  transition: transform var(--transition-base);
+}
+
+.social-link:hover svg {
+  transform: scale(1.1);
+}
+
+/* ==========================================================================
+   4. COLS 2 & 3: QUICK LINKS & INVOLVED LISTS
+   ========================================================================== */
+.footer-title {
+  font-family: var(--font-display);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-h5);
+  color: var(--white);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  position: relative;
+  padding-bottom: var(--space-sm);
+}
+
+.footer-title::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 40px;
+  height: 2px;
+  background-color: var(--teal);
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.footer-links a {
+  color: var(--text-muted);
+  font-size: var(--fs-body-sm);
+  transition: all var(--transition-base);
+  display: inline-block;
+}
+
+.footer-links a:hover,
+.footer-links a:focus {
+  color: var(--teal-light);
+  transform: translateX(6px);
+  outline: none;
+}
+
+/* ==========================================================================
+   5. COL 4: NEWSLETTER SIGNUP
+   ========================================================================== */
+.footer-newsletter-text {
+  font-size: var(--fs-body-sm);
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.footer-newsletter {
+  width: 100%;
+}
+
+.newsletter-input-group {
+  display: flex;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-full);
+  padding: 4px;
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+}
+
+.newsletter-input-group:focus-within {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(26, 138, 148, 0.15);
+}
+
+.newsletter-input-group input[type="email"] {
+  flex-grow: 1;
+  background: transparent;
+  border: none;
+  padding: 12px 20px;
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: var(--fs-body-sm);
+  width: 10px; /* Force flex shrinking */
+  min-width: 0;
+}
+
+.newsletter-input-group input[type="email"]:focus {
+  outline: none;
+}
+
+.newsletter-input-group input[type="email"]::placeholder {
+  color: var(--text-secondary);
+}
+
+.newsletter-input-group button[type="submit"] {
+  padding: 10px 24px;
+  font-size: 0.75rem;
+}
+
+/* ==========================================================================
+   6. FOOTER BOTTOM (Copyright & Legal Policy)
+   ========================================================================== */
+.footer-bottom {
+  padding: 30px 0;
+  background-color: #040a12; /* Darker than midnight for contrast */
+}
+
+.footer-bottom .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-bottom p {
+  font-size: var(--fs-body-sm);
+  color: var(--text-muted);
+  margin-bottom: 0;
+}
+
+.footer-bottom-links {
+  display: flex;
+  gap: var(--space-xl);
+}
+
+.footer-bottom-links a {
+  font-size: var(--fs-body-sm);
+  color: var(--text-muted);
+  transition: color var(--transition-base);
+}
+
+.footer-bottom-links a:hover,
+.footer-bottom-links a:focus {
+  color: var(--white);
+  outline: none;
+}

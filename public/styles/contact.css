@@ -1,0 +1,77 @@
+/* styles/contact.css */
+.contact-hero {
+    min-height: 50vh;
+    display: flex;
+    align-items: center;
+    background: var(--gradient-royal);
+    color: var(--white);
+    padding-top: 80px;
+}
+
+.contact-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 48px;
+    margin-top: -60px;
+    position: relative;
+    z-index: 10;
+}
+
+.contact-info-card {
+    background: var(--midnight);
+    color: var(--white);
+    padding: 40px;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+}
+
+.contact-form-card {
+    background: var(--white);
+    padding: 48px;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+}
+
+.info-item {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.info-icon {
+    font-size: 1.5rem;
+    color: var(--gold);
+}
+
+.info-text h4 {
+    margin-bottom: 8px;
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+}
+
+.info-text p {
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 16px;
+    border: 1px solid #ddd;
+    border-radius: var(--radius-md);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    background: #f8f9fa;
+    transition: var(--transition-base);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--teal);
+    background: var(--white);
+    box-shadow: 0 0 0 4px rgba(26,138,148,0.1);
+}

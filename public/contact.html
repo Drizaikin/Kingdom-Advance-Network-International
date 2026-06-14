@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | KANI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/variables.css">
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/animations.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/navigation.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    <link rel="stylesheet" href="styles/contact.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-icon">✦</span>
+                <span class="logo-text">KANI</span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-dropdown">
+                    <a href="about.html" class="nav-link">About</a>
+                    <div class="dropdown-menu">
+                        <a href="about.html" class="dropdown-link">About KANI</a>
+                        <a href="founder.html" class="dropdown-link">The Founder</a>
+                    </div>
+                </li>
+                <li><a href="programs.html" class="nav-link">Programs</a></li>
+                <li><a href="events.html" class="nav-link">Events</a></li>
+                <li><a href="missions.html" class="nav-link">Missions</a></li>
+                <li><a href="partnership.html" class="nav-link">Partnership</a></li>
+                <li><a href="contact.html" class="nav-link active">Contact</a></li>
+            </ul>
+            <a href="give.html" class="btn btn-primary nav-cta">Give Now</a>
+        </div>
+    </nav>
+
+    <main>
+        <section class="page-hero contact-hero">
+            <div class="container text-center" data-aos="fade-up">
+                <h1 class="hero-home-title text-white">Get in <span style="color: var(--gold);">Touch</span></h1>
+                <p class="hero-home-subtitle text-light" style="margin: 0 auto;">We would love to hear from you. Reach out for inquiries, prayer requests, or partnership opportunities.</p>
+            </div>
+        </section>
+
+        <section class="section section-light" style="padding-top: 0;">
+            <div class="container">
+                <div class="contact-wrapper">
+                    <div class="contact-info-card" data-aos="fade-right">
+                        <div class="info-item">
+                            <div class="info-icon">📍</div>
+                            <div class="info-text">
+                                <h4>Global Headquarters</h4>
+                                <p>Nairobi, Kenya<br>Available for global correspondence.</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-icon">📧</div>
+                            <div class="info-text">
+                                <h4>Email Us</h4>
+                                <p>info@kaniglobal.org<br>prayer@kaniglobal.org</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-icon">📞</div>
+                            <div class="info-text">
+                                <h4>Call Us</h4>
+                                <p>+254 (0) 700 000 000</p>
+                            </div>
+                        </div>
+                        <div style="margin-top: 48px;">
+                            <h4 style="font-family: var(--font-heading); margin-bottom: 16px;">Connect on Social</h4>
+                            <div class="btn-group">
+                                <a href="#" class="btn btn-secondary" style="border-radius: var(--radius-round); padding: 12px;">FB</a>
+                                <a href="#" class="btn btn-secondary" style="border-radius: var(--radius-round); padding: 12px;">IG</a>
+                                <a href="#" class="btn btn-secondary" style="border-radius: var(--radius-round); padding: 12px;">YT</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-form-card" data-aos="fade-left">
+                        <h2 style="font-family: var(--font-heading); color: var(--primary); margin-bottom: 32px;">Send a Message</h2>
+                        <form id="contactForm">
+                            <div class="grid-2" style="gap: 24px; margin-bottom: 24px;">
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <input type="text" id="firstName" class="form-control" placeholder="First Name" required>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <input type="text" id="lastName" class="form-control" placeholder="Last Name" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" id="email" class="form-control" placeholder="Email Address" required>
+                            </div>
+                            <div class="form-group">
+                                <select id="subject" class="form-control" required>
+                                    <option value="" disabled selected>Subject of Inquiry</option>
+                                    <option value="general">General Inquiry</option>
+                                    <option value="prayer">Prayer Request</option>
+                                    <option value="partnership">Partnership</option>
+                                    <option value="event">Event Registration</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <textarea id="message" class="form-control" rows="5" placeholder="Your Message..." required></textarea>
+                            </div>
+                            <button type="submit" id="submitBtn" class="btn btn-primary btn-block btn-large">Send Message</button>
+                            <div id="formStatus" style="margin-top: 16px; text-align: center; font-weight: 500; display: none;"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
+

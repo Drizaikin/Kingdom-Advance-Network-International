@@ -1,0 +1,68 @@
+/* styles/events.css */
+.events-hero {
+    min-height: 50vh;
+    display: flex;
+    align-items: center;
+    background: var(--gradient-dark);
+    color: var(--white);
+    padding-top: 80px;
+    text-align: center;
+}
+
+.featured-event {
+    background: var(--card-dark);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-top: -80px;
+    position: relative;
+    z-index: 10;
+    box-shadow: var(--shadow-xl);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.featured-event-content {
+    padding: 64px;
+    color: var(--white);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.featured-event-image {
+    background: var(--gradient-royal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem;
+}
+
+.countdown-container {
+    display: flex;
+    gap: 16px;
+    margin: 32px 0;
+}
+
+.time-block {
+    background: rgba(255,255,255,0.1);
+    padding: 16px;
+    border-radius: var(--radius-md);
+    text-align: center;
+    min-width: 80px;
+}
+
+.time-block span {
+    display: block;
+    font-size: 2rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--gold);
+}
+
+.time-block small {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    color: var(--teal-light);
+}

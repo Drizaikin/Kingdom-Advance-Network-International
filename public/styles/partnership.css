@@ -1,0 +1,88 @@
+/* styles/partnership.css */
+.partnership-hero {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    background: var(--gradient-dark);
+    color: var(--white);
+    padding-top: 80px;
+    text-align: center;
+}
+
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 32px;
+    margin-top: -80px;
+    position: relative;
+    z-index: 10;
+}
+
+.pricing-card {
+    background: var(--card-dark);
+    border-radius: var(--radius-xl);
+    padding: 40px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: transform 0.3s ease;
+}
+
+.pricing-card:hover {
+    transform: translateY(-10px);
+    border-color: rgba(212,160,23,0.3);
+    box-shadow: var(--shadow-glow-gold);
+}
+
+.pricing-card.featured {
+    background: var(--gradient-royal);
+    transform: scale(1.05);
+    border-color: var(--gold);
+}
+
+.pricing-card.featured:hover {
+    transform: scale(1.05) translateY(-10px);
+}
+
+.tier-name {
+    font-size: 1.5rem;
+    color: var(--white);
+    font-family: var(--font-heading);
+    margin-bottom: 16px;
+}
+
+.tier-price {
+    font-size: 3rem;
+    font-family: var(--font-display);
+    color: var(--gold);
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.tier-period {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.tier-features {
+    list-style: none;
+    padding: 0;
+    margin: 32px 0;
+    text-align: left;
+}
+
+.tier-features li {
+    padding: 12px 0;
+    color: var(--text-light);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.tier-features li::before {
+    content: '✓';
+    color: var(--teal);
+    font-weight: bold;
+}

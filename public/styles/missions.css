@@ -1,0 +1,38 @@
+/* styles/missions.css */
+.missions-hero {
+    min-height: 50vh;
+    display: flex;
+    align-items: center;
+    background: var(--gradient-royal);
+    color: var(--white);
+    padding-top: 80px;
+    text-align: center;
+}
+
+.map-container {
+    background: var(--midnight);
+    border-radius: var(--radius-xl);
+    padding: 40px;
+    position: relative;
+    box-shadow: var(--shadow-xl);
+    overflow: hidden;
+    margin-top: -60px;
+    z-index: 2;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.map-placeholder {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1000 500"><rect width="100%" height="100%" fill="%230a2647"/><circle cx="500" cy="250" r="200" fill="none" stroke="%231a8a94" stroke-width="2" stroke-dasharray="10 5"/><circle cx="300" cy="150" r="10" fill="%23d4a017"/><circle cx="600" cy="200" r="10" fill="%23d4a017"/><circle cx="550" cy="350" r="10" fill="%23d4a017"/></svg>') center/cover;
+    border-radius: var(--radius-lg);
+    position: relative;
+}
+
+.mission-field-card {
+    background: var(--card-dark);
+    padding: 32px;
+    border-radius: var(--radius-lg);
+    margin-top: 32px;
+    border: 1px solid rgba(255,255,255,0.05);
+}

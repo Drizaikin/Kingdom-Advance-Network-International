@@ -1,0 +1,46 @@
+/* styles/founder.css */
+.founder-hero {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    background: var(--midnight);
+    color: var(--white);
+    padding-top: 80px;
+    position: relative;
+    overflow: hidden;
+}
+
+.founder-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url('../assets/images/founder-bg.jpg') center/cover;
+    opacity: 0.3;
+    z-index: 1;
+}
+
+.founder-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+}
+
+.founder-portrait {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: var(--primary);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.founder-signature {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 2.5rem;
+    color: var(--gold);
+    margin-top: 32px;
+}

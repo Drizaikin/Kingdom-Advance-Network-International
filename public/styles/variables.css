@@ -1,0 +1,86 @@
+:root {
+  /* Brand Colors */
+  --primary: #0a2647;
+  --primary-light: #1a4a7a;
+  --primary-rgb: 10, 38, 71;
+  --teal: #1a8a94;
+  --teal-light: #4fc3c7;
+  --teal-dark: #1a6b73;
+  --teal-rgb: 26, 138, 148;
+  --gold: #d4a017;
+  --gold-light: #f4c430;
+  --gold-warm: #ffd54f;
+  --gold-rgb: 212, 160, 23;
+  --white: #ffffff;
+  --off-white: #f8f9fa;
+  --soft-gray: #e8eaed;
+  --medium-gray: #9ca3af;
+  --midnight: #060e1a;
+  --dark-navy: #0d1a2f;
+  --card-dark: #111d32;
+  --text-primary: #1a1a2e;
+  --text-secondary: #6c7293;
+  --text-light: rgba(255, 255, 255, 0.9);
+  --text-muted: rgba(255, 255, 255, 0.6);
+
+  /* Gradients */
+  --gradient-hero: linear-gradient(135deg, #060e1a 0%, #0a2647 40%, #1a6b73 100%);
+  --gradient-royal: linear-gradient(135deg, #0a2647, #1a4a7a, #1a8a94);
+  --gradient-gold: linear-gradient(135deg, #d4a017, #f4c430);
+  --gradient-gold-text: linear-gradient(135deg, #d4a017, #f4c430, #ffd54f);
+  --gradient-teal: linear-gradient(135deg, #1a6b73, #4fc3c7);
+  --gradient-dark: linear-gradient(180deg, #060e1a, #0d1a2f);
+  --gradient-card: linear-gradient(135deg, rgba(26,138,148,0.1), rgba(212,160,23,0.05));
+
+  /* Fonts */
+  --font-display: 'Outfit', sans-serif;
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'Inter', sans-serif;
+
+  /* Typography Scale */
+  --fs-display-xl: 5rem;
+  --fs-display-lg: 4rem;
+  --fs-h1: 3.5rem;
+  --fs-h2: 2.75rem;
+  --fs-h3: 2rem;
+  --fs-h4: 1.5rem;
+  --fs-h5: 1.25rem;
+  --fs-body-lg: 1.125rem;
+  --fs-body: 1rem;
+  --fs-body-sm: 0.875rem;
+  --fs-caption: 0.75rem;
+
+  /* Spacing Scale */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+  --space-4xl: 96px;
+  --space-5xl: 128px;
+  --section-padding: 120px;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 24px rgba(0,0,0,0.12);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.16);
+  --shadow-xl: 0 16px 64px rgba(0,0,0,0.24);
+  --shadow-glow-gold: 0 0 30px rgba(212,160,23,0.3);
+  --shadow-glow-teal: 0 0 30px rgba(26,138,148,0.3);
+
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 50px;
+  --radius-round: 50%;
+
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-base: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  --transition-spring: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}

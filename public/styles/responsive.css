@@ -1,0 +1,144 @@
+/* styles/responsive.css */
+/* Breakpoints: 
+   - Tablets/Large Phones: max-width 1024px
+   - Tablets Portrait/Mobile Landscape: max-width 768px
+   - Mobile Phones: max-width 480px 
+*/
+
+@media (max-width: 1024px) {
+    .container {
+        width: 95%;
+        padding: 0 20px;
+    }
+    
+    .hero-home-title {
+        font-size: 3rem;
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+    }
+    
+    .founder-preview,
+    .contact-wrapper {
+        gap: 32px;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Navigation */
+    .nav-links, .nav-cta {
+        display: none;
+    }
+    
+    .hamburger {
+        display: flex;
+    }
+    
+    /* Hero */
+    .hero-home {
+        padding-top: 100px;
+        text-align: center;
+    }
+    
+    .hero-home-title {
+        font-size: 2.5rem;
+    }
+    
+    .btn-group {
+        justify-content: center;
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .btn-group .btn {
+        width: 100%;
+    }
+    
+    /* Grids to Stack */
+    .founder-preview,
+    .grid-2,
+    .contact-wrapper,
+    .featured-event {
+        grid-template-columns: 1fr;
+    }
+    
+    .founder-content {
+        order: -1; /* Put text above image on mobile */
+        text-align: center;
+    }
+    
+    .featured-event-content {
+        padding: 32px;
+        text-align: center;
+    }
+    
+    .countdown-container {
+        justify-content: center;
+    }
+    
+    /* Footer */
+    .footer-col {
+        text-align: center;
+    }
+    
+    .footer-about {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    /* About Page Timeline */
+    .timeline::before {
+        left: 20px;
+    }
+    
+    .timeline-item {
+        width: 100%;
+        padding-left: 50px;
+        padding-right: 0;
+        text-align: left !important;
+        left: 0 !important;
+    }
+    
+    .timeline-item::after {
+        left: 10px !important;
+        right: auto !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-home-title {
+        font-size: 2rem;
+    }
+    
+    .section {
+        padding: 60px 0;
+    }
+    
+    .stat-card {
+        padding: 24px 16px;
+    }
+    
+    .event-card {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 16px;
+    }
+    
+    .event-date {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    .pricing-card {
+        padding: 24px;
+    }
+    
+    .contact-info-card,
+    .contact-form-card {
+        padding: 24px;
+    }
+}
