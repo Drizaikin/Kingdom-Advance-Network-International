@@ -322,4 +322,9 @@
   height: 48px;
   width: auto;
   object-fit: contain;
+  transition: height var(--transition-base);
+}
+
+.navbar.scrolled .nav-brand-img {
+  height: 40px;
 }
