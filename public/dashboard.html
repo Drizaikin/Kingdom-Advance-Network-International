@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner Dashboard | KANI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/variables.css">
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/animations.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/navigation.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+    <script>
+        // Protected Route Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const session = localStorage.getItem('kani_session');
+            if (!session) {
+                // Not logged in
+                window.location.href = 'partnership.html';
+            }
+        });
+        
+        function logout() {
+            localStorage.removeItem('kani_session');
+            window.location.href = 'partnership.html';
+        }
+    </script>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <img src="assets/images/logo-transparent.png" alt="KANI Logo" class="nav-brand-img">
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="dashboard.html" class="nav-link active">Dashboard</a></li>
+            </ul>
+            <button onclick="logout()" class="btn btn-outline" style="border-color: rgba(255,255,255,0.2); color: white;">Log Out</button>
+        </div>
+    </nav>
+
+    <main style="padding-top: 120px; min-height: 80vh; background: var(--bg-dark);">
+        <div class="container">
+            <div class="section-header" style="text-align: left; margin-bottom: 40px;">
+                <h1 style="color: white; font-family: var(--font-heading); margin-bottom: 8px;">Welcome Back, Partner!</h1>
+                <p style="color: var(--text-muted); font-size: 1.1rem;">Thank you for your continued support of Kingdom Advance Network International.</p>
+            </div>
+            
+            <div class="grid-3" style="gap: 24px;">
+                <div class="card card-glass">
+                    <div class="card-body">
+                        <div style="font-size: 2rem; margin-bottom: 16px;">📚</div>
+                        <h3 style="color: white; margin-bottom: 12px;">Discipleship Resources</h3>
+                        <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 0.95rem;">Access exclusive teaching materials, study guides, and sermon notes.</p>
+                        <a href="#" class="btn btn-primary btn-block">Access Library</a>
+                    </div>
+                </div>
+                
+                <div class="card card-glass">
+                    <div class="card-body">
+                        <div style="font-size: 2rem; margin-bottom: 16px;">🙏</div>
+                        <h3 style="color: white; margin-bottom: 12px;">Prayer Network</h3>
+                        <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 0.95rem;">Join the global 24/7 prayer chain and submit confidential prayer requests.</p>
+                        <a href="#" class="btn btn-outline btn-block" style="color: white; border-color: rgba(255,255,255,0.2);">Submit Request</a>
+                    </div>
+                </div>
+
+                <div class="card card-glass">
+                    <div class="card-body">
+                        <div style="font-size: 2rem; margin-bottom: 16px;">💳</div>
+                        <h3 style="color: white; margin-bottom: 12px;">Manage Giving</h3>
+                        <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 0.95rem;">Update your partnership tier, view giving history, and download tax statements.</p>
+                        <a href="give.html" class="btn btn-secondary btn-block">Manage</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-bottom" style="background: #040914; color: rgba(255,255,255,0.4); padding: 24px 0; text-align: center; font-size: 0.85rem;">
+            <div class="container">
+                <p>&copy; 2024 Kingdom Advance Network International. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

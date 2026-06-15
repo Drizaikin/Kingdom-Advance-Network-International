@@ -19,7 +19,7 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">
-                <img src="assets/images/logo.jpeg" alt="KANI Logo" class="nav-brand-img">
+                <img src="assets/images/logo-transparent.png" alt="KANI Logo" class="nav-brand-img">
             </a>
             <ul class="nav-links" id="navLinks">
                 <li><a href="index.html" class="nav-link">Home</a></li>
@@ -37,8 +37,33 @@
                 <li><a href="contact.html" class="nav-link">Contact</a></li>
             </ul>
             <a href="give.html" class="btn btn-primary nav-cta">Give Now</a>
+            <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu">
+                <span></span><span></span><span></span>
+            </button>
         </div>
     </nav>
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-header">
+            <a href="index.html" class="nav-logo">
+                <img src="assets/images/logo-transparent.png" alt="KANI Logo" class="nav-brand-img">
+            </a>
+            <button class="mobile-close" id="mobileClose" aria-label="Close menu">&times;</button>
+        </div>
+        <div class="mobile-nav-links">
+            <a href="index.html" class="mobile-link">Home</a>
+            <a href="about.html" class="mobile-link">About</a>
+            <a href="founder.html" class="mobile-link">The Founder</a>
+            <a href="programs.html" class="mobile-link">Programs</a>
+            <a href="events.html" class="mobile-link active">Events</a>
+            <a href="missions.html" class="mobile-link">Missions</a>
+            <a href="partnership.html" class="mobile-link">Partnership</a>
+            <a href="give.html" class="mobile-link">Give</a>
+            <a href="contact.html" class="mobile-link">Contact</a>
+        </div>
+        <div class="mobile-nav-footer">
+            <a href="give.html" class="btn btn-primary btn-block">Give Now</a>
+        </div>
+    </div>
 
     <main>
         <section class="page-hero events-hero">
@@ -50,24 +75,47 @@
 
         <section class="section section-dark" style="padding-top: 0;">
             <div class="container">
-                <div class="featured-event" data-aos="fade-up">
-                    <div class="featured-event-content">
-                        <div class="card-badge" style="display:inline-block; margin-bottom: 16px;">Next Major Event</div>
-                        <h2 style="font-family: var(--font-heading); font-size: 2.5rem; margin-bottom: 16px;">Global Impact Conference</h2>
-                        <p style="color: var(--text-muted); font-size: 1.1rem; line-height: 1.6;">A defining moment for believers worldwide. Three days of apostolic teaching, prophetic ministry, and kingdom empowerment.</p>
-                        
-                        <div class="countdown-container countdown-timer" data-date="2024-12-31T00:00:00">
-                            <!-- Populated by JS -->
-                        </div>
-                        
-                        <a href="#" class="btn btn-primary">Register Now</a>
+                
+                <!-- Dynamic Events Container -->
+                <div id="eventsList" class="event-card-list">
+                    <div style="text-align: center; width: 100%;">
+                        <p>Loading upcoming events...</p>
                     </div>
-                    <div class="featured-event-image">🌍</div>
                 </div>
+
             </div>
         </section>
+
+        <!-- Registration Modal -->
+        <div id="registrationModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
+            <div class="card card-glass" style="max-width: 500px; width: 100%; position: relative;">
+                <button onclick="closeRegistrationModal()" style="position: absolute; right: 20px; top: 20px; background: none; border: none; color: white; font-size: 24px; cursor: pointer;">&times;</button>
+                <div class="card-body">
+                    <h3 style="color: white; margin-bottom: 8px;">Register for Event</h3>
+                    <p id="regEventTitle" style="color: var(--gold); margin-bottom: 24px; font-weight: 600;"></p>
+                    
+                    <form id="eventRegForm">
+                        <input type="hidden" id="regEventId">
+                        <div class="grid-2" style="gap: 16px; margin-bottom: 16px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <input type="text" id="regFirstName" class="form-control" placeholder="First Name" required>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <input type="text" id="regLastName" class="form-control" placeholder="Last Name" required>
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 24px;">
+                            <input type="email" id="regEmail" class="form-control" placeholder="Email Address" required>
+                        </div>
+                        <div id="regStatus" style="margin-bottom: 16px; display: none; font-weight: 500;"></div>
+                        <button type="submit" id="regSubmitBtn" class="btn btn-primary btn-block">Confirm Registration</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </main>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="js/navigation.js"></script>
     <script src="js/components.js"></script>
     <script src="js/main.js"></script>
 </body>

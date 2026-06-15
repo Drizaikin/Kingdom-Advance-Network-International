@@ -19,7 +19,7 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">
-                <img src="assets/images/logo.jpeg" alt="KANI Logo" class="nav-brand-img">
+                <img src="assets/images/logo-transparent.png" alt="KANI Logo" class="nav-brand-img">
             </a>
             <ul class="nav-links" id="navLinks">
                 <li><a href="index.html" class="nav-link">Home</a></li>
@@ -37,8 +37,33 @@
                 <li><a href="contact.html" class="nav-link">Contact</a></li>
             </ul>
             <a href="give.html" class="btn btn-primary nav-cta">Give Now</a>
+            <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu">
+                <span></span><span></span><span></span>
+            </button>
         </div>
     </nav>
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-header">
+            <a href="index.html" class="nav-logo">
+                <img src="assets/images/logo-transparent.png" alt="KANI Logo" class="nav-brand-img">
+            </a>
+            <button class="mobile-close" id="mobileClose" aria-label="Close menu">&times;</button>
+        </div>
+        <div class="mobile-nav-links">
+            <a href="index.html" class="mobile-link">Home</a>
+            <a href="about.html" class="mobile-link">About</a>
+            <a href="founder.html" class="mobile-link">The Founder</a>
+            <a href="programs.html" class="mobile-link">Programs</a>
+            <a href="events.html" class="mobile-link">Events</a>
+            <a href="missions.html" class="mobile-link">Missions</a>
+            <a href="partnership.html" class="mobile-link active">Partnership</a>
+            <a href="give.html" class="mobile-link">Give</a>
+            <a href="contact.html" class="mobile-link">Contact</a>
+        </div>
+        <div class="mobile-nav-footer">
+            <a href="give.html" class="btn btn-primary btn-block">Give Now</a>
+        </div>
+    </div>
 
     <main>
         <section class="page-hero partnership-hero">
@@ -93,8 +118,50 @@
                 </div>
             </div>
         </section>
+        <section class="section section-light">
+            <div class="container">
+                <div class="section-header" data-aos="fade-up">
+                    <h2 class="section-title">Partner Portal</h2>
+                    <p class="section-subtitle">Access your exclusive resources and dashboard.</p>
+                </div>
+                
+                <div class="card" data-aos="fade-up" style="max-width: 500px; margin: 0 auto; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+                    <div class="card-body" style="padding: 32px;">
+                        <form id="partnerAuthForm">
+                            <h3 id="authTitle" style="margin-bottom: 24px; font-family: var(--font-heading);">Log In to Your Account</h3>
+                            
+                            <div id="signupFields" style="display: none;">
+                                <div class="grid-2" style="gap: 16px; margin-bottom: 16px;">
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="text" id="authFirstName" class="form-control" placeholder="First Name">
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="text" id="authLastName" class="form-control" placeholder="Last Name">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 16px;">
+                                <input type="email" id="authEmail" class="form-control" placeholder="Email Address" required>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 24px;">
+                                <input type="password" id="authPassword" class="form-control" placeholder="Password" required>
+                            </div>
+                            
+                            <div id="authStatus" style="margin-bottom: 16px; display: none; font-weight: 500;"></div>
+                            
+                            <button type="submit" id="authSubmitBtn" class="btn btn-primary btn-block">Log In</button>
+                        </form>
+                        <div style="text-align: center; margin-top: 16px;">
+                            <a href="#" onclick="toggleAuthMode(event)" id="authToggleLink" style="color: var(--teal); font-weight: 500; text-decoration: none;">New Partner? Create an account</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="js/navigation.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

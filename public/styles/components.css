@@ -84,13 +84,15 @@
 /* Page Hero */
 .page-hero {
   min-height: 55vh;
+  height: auto;
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--gradient-hero);
   position: relative;
   overflow: hidden;
-  padding: var(--space-5xl) 0 var(--space-3xl);
+  padding-top: 180px;
+  padding-bottom: 120px;
   text-align: center;
 }
 
@@ -114,6 +116,7 @@
   max-width: 800px;
   margin: 0 auto;
   padding: 0 var(--space-lg);
+  flex-shrink: 0;
 }
 
 .page-hero h1 {

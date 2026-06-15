@@ -19,7 +19,7 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">
-                <img src="assets/images/logo.jpeg" alt="KANI Logo" class="nav-brand-img">
+                <img src="assets/images/logo-transparent.png" alt="KANI Logo" class="nav-brand-img">
             </a>
             <ul class="nav-links" id="navLinks">
                 <li><a href="index.html" class="nav-link">Home</a></li>
@@ -37,8 +37,33 @@
                 <li><a href="contact.html" class="nav-link">Contact</a></li>
             </ul>
             <a href="give.html" class="btn btn-primary nav-cta">Give Now</a>
+            <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu">
+                <span></span><span></span><span></span>
+            </button>
         </div>
     </nav>
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-header">
+            <a href="index.html" class="nav-logo">
+                <img src="assets/images/logo-transparent.png" alt="KANI Logo" class="nav-brand-img">
+            </a>
+            <button class="mobile-close" id="mobileClose" aria-label="Close menu">&times;</button>
+        </div>
+        <div class="mobile-nav-links">
+            <a href="index.html" class="mobile-link">Home</a>
+            <a href="about.html" class="mobile-link">About</a>
+            <a href="founder.html" class="mobile-link">The Founder</a>
+            <a href="programs.html" class="mobile-link">Programs</a>
+            <a href="events.html" class="mobile-link">Events</a>
+            <a href="missions.html" class="mobile-link active">Missions</a>
+            <a href="partnership.html" class="mobile-link">Partnership</a>
+            <a href="give.html" class="mobile-link">Give</a>
+            <a href="contact.html" class="mobile-link">Contact</a>
+        </div>
+        <div class="mobile-nav-footer">
+            <a href="give.html" class="btn btn-primary btn-block">Give Now</a>
+        </div>
+    </div>
 
     <main>
         <section class="page-hero missions-hero">
@@ -56,15 +81,51 @@
                         <h2 style="font-family: var(--font-heading); color: var(--white); font-size: 2rem;">Our Global Footprint</h2>
                         <p style="color: var(--text-muted);">Interactive map showing our active mission fields across 42 nations.</p>
                     </div>
-                    <div class="map-placeholder">
-                        <!-- SVG Background Map -->
+                    <div id="globeViz" class="map-placeholder" style="height: 60vh; max-height: 600px; min-height: 400px; width: 100%; border-radius: var(--radius-xl); overflow: hidden; background: #000;">
+                        <!-- Globe will render here -->
                     </div>
                 </div>
             </div>
         </section>
     </main>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://unpkg.com/globe.gl"></script>
+    <script src="js/navigation.js"></script>
     <script src="js/main.js"></script>
+    <script>
+        // Initialize Globe
+        const N = 20; // Generate random mission locations
+        const gData = [...Array(N).keys()].map(() => ({
+            lat: (Math.random() - 0.5) * 180,
+            lng: (Math.random() - 0.5) * 360,
+            size: Math.random() * 0.5 + 0.1,
+            color: ['#d4a017', '#1a8a94', '#4fc3c7'][Math.round(Math.random() * 2)]
+        }));
+
+        const GlobeObj = Globe()
+            (document.getElementById('globeViz'))
+            .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
+            .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
+            .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+            .labelsData(gData)
+            .labelLat('lat')
+            .labelLng('lng')
+            .labelText(() => 'Mission Active')
+            .labelSize('size')
+            .labelDotRadius(0.8)
+            .labelColor('color')
+            .labelResolution(2);
+
+        // Auto-rotate
+        GlobeObj.controls().autoRotate = true;
+        GlobeObj.controls().autoRotateSpeed = 0.5;
+
+        // Resize support
+        window.addEventListener('resize', () => {
+            GlobeObj.width(document.getElementById('globeViz').clientWidth);
+            GlobeObj.height(document.getElementById('globeViz').clientHeight);
+        });
+    </script>
 </body>
 </html>
 

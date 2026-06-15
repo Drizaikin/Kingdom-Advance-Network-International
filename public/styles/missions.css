@@ -1,11 +1,13 @@
 /* styles/missions.css */
 .missions-hero {
     min-height: 50vh;
+    height: auto;
     display: flex;
     align-items: center;
     background: var(--gradient-royal);
     color: var(--white);
-    padding-top: 80px;
+    padding-top: 180px;
+    padding-bottom: 120px;
     text-align: center;
 }
 

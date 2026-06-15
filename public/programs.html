@@ -19,7 +19,7 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">
-                <img src="assets/images/logo.jpeg" alt="KANI Logo" class="nav-brand-img">
+                <img src="assets/images/logo-transparent.png" alt="KANI Logo" class="nav-brand-img">
             </a>
             <ul class="nav-links" id="navLinks">
                 <li><a href="index.html" class="nav-link">Home</a></li>
@@ -37,8 +37,33 @@
                 <li><a href="contact.html" class="nav-link">Contact</a></li>
             </ul>
             <a href="give.html" class="btn btn-primary nav-cta">Give Now</a>
+            <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu">
+                <span></span><span></span><span></span>
+            </button>
         </div>
     </nav>
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-header">
+            <a href="index.html" class="nav-logo">
+                <img src="assets/images/logo-transparent.png" alt="KANI Logo" class="nav-brand-img">
+            </a>
+            <button class="mobile-close" id="mobileClose" aria-label="Close menu">&times;</button>
+        </div>
+        <div class="mobile-nav-links">
+            <a href="index.html" class="mobile-link">Home</a>
+            <a href="about.html" class="mobile-link">About</a>
+            <a href="founder.html" class="mobile-link">The Founder</a>
+            <a href="programs.html" class="mobile-link active">Programs</a>
+            <a href="events.html" class="mobile-link">Events</a>
+            <a href="missions.html" class="mobile-link">Missions</a>
+            <a href="partnership.html" class="mobile-link">Partnership</a>
+            <a href="give.html" class="mobile-link">Give</a>
+            <a href="contact.html" class="mobile-link">Contact</a>
+        </div>
+        <div class="mobile-nav-footer">
+            <a href="give.html" class="btn btn-primary btn-block">Give Now</a>
+        </div>
+    </div>
 
     <main>
         <section class="page-hero programs-hero">
@@ -52,24 +77,30 @@
         <section class="section section-light">
             <div class="container">
                 <div class="programs-grid">
-                    <div class="program-card" data-aos="fade-up">
-                        <div class="program-image" style="background: linear-gradient(135deg, #0a2647, #1a8a94);">🙏</div>
+                    <div class="program-card modern-card" data-aos="fade-up">
+                        <div class="card-image-header">
+                            <img src="assets/images/prayer_worship_church.png" alt="Prayer and Revival">
+                        </div>
                         <div class="program-content">
                             <h3 class="program-title">Prayer & Revival</h3>
                             <p class="program-desc">Igniting spiritual awakening through fervent, united global prayer networks and revival meetings.</p>
                             <a href="#" class="btn btn-outline btn-block">Learn More</a>
                         </div>
                     </div>
-                    <div class="program-card" data-aos="fade-up" data-aos-delay="100">
-                        <div class="program-image" style="background: linear-gradient(135deg, #1a8a94, #4fc3c7);">📖</div>
+                    <div class="program-card modern-card" data-aos="fade-up" data-aos-delay="100">
+                        <div class="card-image-header">
+                            <img src="assets/images/bible_study_group.png" alt="Discipleship Hub">
+                        </div>
                         <div class="program-content">
                             <h3 class="program-title">Discipleship Hub</h3>
                             <p class="program-desc">Comprehensive biblical training to build strong foundations and mature believers.</p>
                             <a href="#" class="btn btn-outline btn-block">Learn More</a>
                         </div>
                     </div>
-                    <div class="program-card" data-aos="fade-up" data-aos-delay="200">
-                        <div class="program-image" style="background: linear-gradient(135deg, #d4a017, #f4c430);">👑</div>
+                    <div class="program-card modern-card" data-aos="fade-up" data-aos-delay="200">
+                        <div class="card-image-header">
+                            <img src="assets/images/leadership_seminar.png" alt="Leadership Development">
+                        </div>
                         <div class="program-content">
                             <h3 class="program-title">Leadership Development</h3>
                             <p class="program-desc">Raising competent, character-driven leaders for the church, marketplace, and public square.</p>
@@ -81,6 +112,7 @@
         </section>
     </main>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="js/navigation.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

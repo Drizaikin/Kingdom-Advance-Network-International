@@ -172,53 +172,7 @@ img {
   gap: var(--space-xl);
 }
 
-/* Page Hero */
-.page-hero {
-  min-height: 60vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--gradient-hero);
-  position: relative;
-  overflow: hidden;
-  padding-top: 100px;
-  text-align: center;
-}
-
-.page-hero::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: radial-gradient(rgba(26, 138, 148, 0.15) 1px, transparent 1px);
-  background-size: 24px 24px;
-  opacity: 0.5;
-  z-index: 1;
-}
-
-.page-hero-content {
-  position: relative;
-  z-index: 2;
-  max-width: 800px;
-  padding: 0 var(--space-lg);
-  margin: 0 auto;
-}
-
-.page-hero h1 {
-  font-family: var(--font-display);
-  font-size: var(--fs-h1);
-  color: var(--white);
-  margin-bottom: var(--space-md);
-}
-
-.page-hero p {
-  color: var(--text-light);
-  font-size: var(--fs-body-lg);
-  max-width: 600px;
-  margin: 0 auto;
-}
+/* Page Hero styles moved to components.css for centralization */
 
 /* Button Classes */
 .btn {

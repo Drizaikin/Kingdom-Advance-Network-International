@@ -20,7 +20,7 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">
-                <img src="assets/images/logo.jpeg" alt="KANI Logo" class="nav-brand-img">
+                <img src="assets/images/logo-transparent.png" alt="KANI Logo" class="nav-brand-img">
             </a>
             <ul class="nav-links" id="navLinks">
                 <li><a href="index.html" class="nav-link">Home</a></li>
@@ -38,8 +38,33 @@
                 <li><a href="contact.html" class="nav-link">Contact</a></li>
             </ul>
             <a href="give.html" class="btn btn-primary nav-cta">Give Now</a>
+            <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu">
+                <span></span><span></span><span></span>
+            </button>
         </div>
     </nav>
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-header">
+            <a href="index.html" class="nav-logo">
+                <img src="assets/images/logo-transparent.png" alt="KANI Logo" class="nav-brand-img">
+            </a>
+            <button class="mobile-close" id="mobileClose" aria-label="Close menu">&times;</button>
+        </div>
+        <div class="mobile-nav-links">
+            <a href="index.html" class="mobile-link">Home</a>
+            <a href="about.html" class="mobile-link active">About</a>
+            <a href="founder.html" class="mobile-link">The Founder</a>
+            <a href="programs.html" class="mobile-link">Programs</a>
+            <a href="events.html" class="mobile-link">Events</a>
+            <a href="missions.html" class="mobile-link">Missions</a>
+            <a href="partnership.html" class="mobile-link">Partnership</a>
+            <a href="give.html" class="mobile-link">Give</a>
+            <a href="contact.html" class="mobile-link">Contact</a>
+        </div>
+        <div class="mobile-nav-footer">
+            <a href="give.html" class="btn btn-primary btn-block">Give Now</a>
+        </div>
+    </div>
 
     <main>
         <section class="about-hero">
@@ -55,16 +80,22 @@
                 <div class="section-header">
                     <h2 class="section-title">Vision & Mission</h2>
                 </div>
-                <div class="grid-2">
-                    <div class="card p-4 text-center" data-aos="fade-right">
-                        <div style="font-size: 3rem; color: var(--gold); margin-bottom: 16px;">👁️</div>
-                        <h3 class="card-title" style="color: var(--white);">Our Vision</h3>
-                        <p class="card-text">To see the nations of the earth transformed by the power of the Gospel and the manifestation of God's Kingdom in every sphere of society.</p>
+                <div class="grid-2" style="gap: 40px;">
+                    <div class="vision-mission-card" data-aos="fade-right">
+                        <img src="assets/images/global_vision_concept.png" alt="Our Vision" class="vm-bg">
+                        <div class="vm-overlay"></div>
+                        <div class="vm-content">
+                            <h3 class="vm-title">Our Vision</h3>
+                            <p class="vm-text">To see the nations of the earth transformed by the power of the Gospel and the manifestation of God's Kingdom in every sphere of society.</p>
+                        </div>
                     </div>
-                    <div class="card p-4 text-center" data-aos="fade-left">
-                        <div style="font-size: 3rem; color: var(--teal); margin-bottom: 16px;">🎯</div>
-                        <h3 class="card-title" style="color: var(--white);">Our Mission</h3>
-                        <p class="card-text">To raise, equip, and deploy Kingdom ambassadors globally through prayer, revival, discipleship, and leadership development.</p>
+                    <div class="vision-mission-card" data-aos="fade-left" data-aos-delay="100">
+                        <img src="assets/images/mission_strategy.png" alt="Our Mission" class="vm-bg">
+                        <div class="vm-overlay"></div>
+                        <div class="vm-content">
+                            <h3 class="vm-title">Our Mission</h3>
+                            <p class="vm-text">To raise, equip, and deploy Kingdom ambassadors globally through prayer, revival, discipleship, and leadership development.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -101,6 +132,7 @@
         </section>
     </main>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="js/navigation.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
