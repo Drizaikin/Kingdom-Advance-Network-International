@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation Successful | KANI</title>
+    <meta name="robots" content="noindex">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/variables.css">
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/navigation.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+    <style>
+        body { background: var(--bg-dark); }
+        .success-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 120px 20px 80px;
+        }
+        .success-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 24px;
+            padding: 60px 48px;
+            max-width: 560px;
+            width: 100%;
+            text-align: center;
+            backdrop-filter: blur(20px);
+        }
+        .success-icon {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 32px;
+            font-size: 2.5rem;
+            box-shadow: 0 0 40px rgba(16,185,129,0.3);
+            animation: pulse-green 2s infinite;
+        }
+        @keyframes pulse-green {
+            0%, 100% { box-shadow: 0 0 40px rgba(16,185,129,0.3); }
+            50% { box-shadow: 0 0 60px rgba(16,185,129,0.5); }
+        }
+        .confetti-dot {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: fall linear forwards;
+            pointer-events: none;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        .receipt-box {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin: 28px 0;
+            text-align: left;
+        }
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            font-size: 0.9rem;
+        }
+        .receipt-row:last-child { border-bottom: none; }
+        .receipt-label { color: var(--text-muted); }
+        .receipt-value { color: white; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <img src="assets/images/logo-transparent.png" alt="KANI Logo" class="nav-brand-img">
+            </a>
+        </div>
+    </nav>
+
+    <main class="success-page">
+        <div class="success-card" data-aos="zoom-in">
+            <div class="success-icon">✅</div>
+            <h1 style="font-family:var(--font-heading);color:white;font-size:2rem;margin-bottom:12px;">Thank You!</h1>
+            <p style="color:var(--text-muted);font-size:1.05rem;line-height:1.7;margin-bottom:8px;">
+                Your donation has been received and will go directly towards advancing God's Kingdom across the nations.
+            </p>
+            <p style="color:var(--gold);font-style:italic;font-size:0.95rem;margin-bottom:0;">
+                "He who sows bountifully will also reap bountifully." — 2 Corinthians 9:6
+            </p>
+
+            <div class="receipt-box" id="receiptBox" style="display:none;">
+                <div class="receipt-row">
+                    <span class="receipt-label">Amount</span>
+                    <span class="receipt-value" id="receiptAmount">—</span>
+                </div>
+                <div class="receipt-row">
+                    <span class="receipt-label">Reference</span>
+                    <span class="receipt-value" id="receiptRef" style="font-size:0.8rem;font-family:monospace;">—</span>
+                </div>
+                <div class="receipt-row">
+                    <span class="receipt-label">Status</span>
+                    <span class="receipt-value" style="color:#10b981;">✅ Confirmed</span>
+                </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:12px;margin-top:32px;">
+                <a href="index.html" class="btn btn-primary btn-block">Return to Homepage</a>
+                <a href="give.html" class="btn btn-outline btn-block" style="color:white;border-color:rgba(255,255,255,0.2);">Give Again</a>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof AOS !== 'undefined') AOS.init({ duration: 600 });
+
+            // Parse URL params
+            const params = new URLSearchParams(window.location.search);
+            const ref = params.get('ref');
+            const amount = params.get('amount');
+            const currency = params.get('currency') || 'KES';
+
+            if (ref || amount) {
+                const box = document.getElementById('receiptBox');
+                if (box) box.style.display = 'block';
+                if (ref) document.getElementById('receiptRef').textContent = ref;
+                if (amount) {
+                    const formatted = new Intl.NumberFormat('en-KE', {
+                        style: 'currency',
+                        currency: currency,
+                    }).format(parseFloat(amount));
+                    document.getElementById('receiptAmount').textContent = formatted;
+                }
+            }
+
+            // Confetti celebration
+            const colors = ['#f59e0b', '#6366f1', '#10b981', '#ec4899', '#3b82f6'];
+            for (let i = 0; i < 40; i++) {
+                setTimeout(() => {
+                    const dot = document.createElement('div');
+                    dot.className = 'confetti-dot';
+                    dot.style.left = Math.random() * 100 + 'vw';
+                    dot.style.top = '-20px';
+                    dot.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    dot.style.width = (Math.random() * 8 + 6) + 'px';
+                    dot.style.height = dot.style.width;
+                    dot.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    document.body.appendChild(dot);
+                    setTimeout(() => dot.remove(), 6000);
+                }, i * 80);
+            }
+        });
+    </script>
+</body>
+</html>

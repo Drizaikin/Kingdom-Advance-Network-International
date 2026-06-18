@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Partner Dashboard | KANI</title>
+    <title>Partner Dashboard | KANI — Kingdom Advance Network International</title>
+    <meta name="robots" content="noindex">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="styles/variables.css">
@@ -13,82 +14,382 @@
     <link rel="stylesheet" href="styles/navigation.css">
     <link rel="stylesheet" href="styles/footer.css">
     <link rel="stylesheet" href="styles/responsive.css">
-    <script>
-        // Protected Route Logic
-        document.addEventListener('DOMContentLoaded', () => {
-            const session = localStorage.getItem('kani_session');
-            if (!session) {
-                // Not logged in
-                window.location.href = 'partnership.html';
-            }
-        });
-        
-        function logout() {
-            localStorage.removeItem('kani_session');
-            window.location.href = 'partnership.html';
+    <style>
+        body { background: var(--bg-dark); }
+
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 0;
+            min-height: calc(100vh - 80px);
         }
-    </script>
+
+        /* Sidebar */
+        .dash-sidebar {
+            background: rgba(255,255,255,0.03);
+            border-right: 1px solid rgba(255,255,255,0.06);
+            padding: 32px 20px;
+            position: sticky;
+            top: 80px;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+        .dash-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            margin-bottom: 4px;
+        }
+        .dash-nav-item:hover { background: rgba(255,255,255,0.06); color: white; }
+        .dash-nav-item.active { background: rgba(245,158,11,0.12); color: var(--gold); }
+        .dash-nav-icon { font-size: 1.2rem; flex-shrink: 0; }
+        .dash-nav-divider {
+            height: 1px;
+            background: rgba(255,255,255,0.06);
+            margin: 16px 0;
+        }
+
+        /* Main content */
+        .dash-main { padding: 40px 48px; }
+
+        /* Profile header */
+        .dash-welcome {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            padding: 28px 32px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+        }
+        .dash-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--gradient-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--midnight);
+            flex-shrink: 0;
+        }
+        .dash-welcome-text h1 {
+            font-family: var(--font-heading);
+            color: white;
+            font-size: 1.6rem;
+            margin-bottom: 4px;
+        }
+        .dash-welcome-text p { color: var(--text-muted); font-size: 0.9rem; }
+
+        /* Stat cards */
+        .dash-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .dash-stat-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 14px;
+            padding: 24px;
+            text-align: center;
+        }
+        .dash-stat-number {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--gold);
+        }
+        .dash-stat-label { color: var(--text-muted); font-size: 0.85rem; margin-top: 4px; }
+
+        /* Section panel */
+        .dash-panel {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 28px;
+        }
+        .dash-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 28px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .dash-panel-title {
+            font-family: var(--font-heading);
+            color: white;
+            font-size: 1.1rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .dash-panel-body { padding: 12px 0; }
+
+        /* List items */
+        .dash-list-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 28px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            transition: background 0.15s;
+        }
+        .dash-list-item:last-child { border-bottom: none; }
+        .dash-list-item:hover { background: rgba(255,255,255,0.03); }
+        .dash-list-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .dash-list-content { flex: 1; min-width: 0; }
+        .dash-list-content h4 {
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin: 0 0 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .dash-list-content p { color: var(--text-muted); font-size: 0.82rem; margin: 0; }
+
+        /* Empty state */
+        .dash-empty {
+            text-align: center;
+            padding: 48px 20px;
+            color: var(--text-muted);
+        }
+        .dash-empty-icon { font-size: 2.5rem; margin-bottom: 12px; }
+        .dash-empty p { max-width: 300px; margin: 0 auto; font-size: 0.9rem; }
+
+        /* Prayer form */
+        .prayer-form-panel {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 28px;
+        }
+        .prayer-form-panel h3 {
+            font-family: var(--font-heading);
+            color: white;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        /* Tabs */
+        .dash-tabs {
+            display: none; /* hide for now, show panels directly */
+        }
+
+        /* Skeleton loader */
+        .dash-skeleton {
+            height: 60px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.2s infinite;
+            border-radius: 8px;
+            margin: 12px 28px;
+        }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+
+        @media (max-width: 1024px) {
+            .dashboard-layout { grid-template-columns: 1fr; }
+            .dash-sidebar { display: none; }
+            .dash-main { padding: 24px 20px; }
+            .dash-stats { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 600px) {
+            .dash-stats { grid-template-columns: 1fr; }
+            .dash-welcome { flex-direction: column; text-align: center; }
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar" id="navbar">
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar" style="background:var(--midnight);border-bottom:1px solid rgba(255,255,255,0.06);">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">
                 <img src="assets/images/logo-transparent.png" alt="KANI Logo" class="nav-brand-img">
             </a>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="dashboard.html" class="nav-link active">Dashboard</a></li>
-            </ul>
-            <button onclick="logout()" class="btn btn-outline" style="border-color: rgba(255,255,255,0.2); color: white;">Log Out</button>
+            <div style="display:flex;align-items:center;gap:16px;">
+                <a href="index.html" style="color:var(--text-muted);text-decoration:none;font-size:0.9rem;transition:color 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='var(--text-muted)'">← Back to Site</a>
+                <button onclick="logout()" class="btn btn-outline" style="border-color:rgba(255,255,255,0.15);color:white;padding:8px 18px;font-size:0.9rem;">Log Out</button>
+            </div>
         </div>
     </nav>
 
-    <main style="padding-top: 120px; min-height: 80vh; background: var(--bg-dark);">
-        <div class="container">
-            <div class="section-header" style="text-align: left; margin-bottom: 40px;">
-                <h1 style="color: white; font-family: var(--font-heading); margin-bottom: 8px;">Welcome Back, Partner!</h1>
-                <p style="color: var(--text-muted); font-size: 1.1rem;">Thank you for your continued support of Kingdom Advance Network International.</p>
+    <div class="dashboard-layout" style="margin-top:80px;">
+        <!-- Sidebar -->
+        <aside class="dash-sidebar">
+            <div style="padding:0 8px 20px;">
+                <p style="color:var(--text-muted);font-size:0.8rem;text-transform:uppercase;letter-spacing:1.5px;font-weight:600;">Partner Portal</p>
             </div>
-            
-            <div class="grid-3" style="gap: 24px;">
-                <div class="card card-glass">
-                    <div class="card-body">
-                        <div style="font-size: 2rem; margin-bottom: 16px;">📚</div>
-                        <h3 style="color: white; margin-bottom: 12px;">Discipleship Resources</h3>
-                        <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 0.95rem;">Access exclusive teaching materials, study guides, and sermon notes.</p>
-                        <a href="#" class="btn btn-primary btn-block">Access Library</a>
+            <button class="dash-nav-item active" onclick="scrollToSection('overview')">
+                <span class="dash-nav-icon">🏠</span> Overview
+            </button>
+            <button class="dash-nav-item" onclick="scrollToSection('events-section')">
+                <span class="dash-nav-icon">📅</span> My Events
+            </button>
+            <button class="dash-nav-item" onclick="scrollToSection('giving-section')">
+                <span class="dash-nav-icon">💳</span> Giving History
+            </button>
+            <button class="dash-nav-item" onclick="scrollToSection('prayer-section')">
+                <span class="dash-nav-icon">🙏</span> Prayer Requests
+            </button>
+            <div class="dash-nav-divider"></div>
+            <a href="give.html" class="dash-nav-item" style="text-decoration:none;">
+                <span class="dash-nav-icon">💰</span> Give Now
+            </a>
+            <a href="events.html" class="dash-nav-item" style="text-decoration:none;">
+                <span class="dash-nav-icon">🎤</span> Browse Events
+            </a>
+            <div class="dash-nav-divider"></div>
+            <button class="dash-nav-item" onclick="logout()" style="color:#ef4444;">
+                <span class="dash-nav-icon">🚪</span> Log Out
+            </button>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dash-main">
+            <!-- Profile Header -->
+            <div id="dashboardProfile" id="overview">
+                <div class="dash-welcome">
+                    <div class="dash-avatar">KA</div>
+                    <div class="dash-welcome-text">
+                        <h1>Loading...</h1>
+                        <p>Please wait while we load your profile.</p>
                     </div>
                 </div>
-                
-                <div class="card card-glass">
-                    <div class="card-body">
-                        <div style="font-size: 2rem; margin-bottom: 16px;">🙏</div>
-                        <h3 style="color: white; margin-bottom: 12px;">Prayer Network</h3>
-                        <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 0.95rem;">Join the global 24/7 prayer chain and submit confidential prayer requests.</p>
-                        <a href="#" class="btn btn-outline btn-block" style="color: white; border-color: rgba(255,255,255,0.2);">Submit Request</a>
-                    </div>
+            </div>
+
+            <!-- Stats Summary -->
+            <div class="dash-stats" data-aos="fade-up">
+                <div class="dash-stat-card">
+                    <div class="dash-stat-number" id="eventsCount">—</div>
+                    <div class="dash-stat-label">Events Registered</div>
+                </div>
+                <div class="dash-stat-card">
+                    <div class="dash-stat-number" id="givingTotal">—</div>
+                    <div class="dash-stat-label">Total Given</div>
+                </div>
+                <div class="dash-stat-card">
+                    <div class="dash-stat-number" id="prayersCount">—</div>
+                    <div class="dash-stat-label">Prayer Requests</div>
+                </div>
+            </div>
+
+            <!-- Registered Events -->
+            <div id="events-section" class="dash-panel" data-aos="fade-up">
+                <div class="dash-panel-header">
+                    <h3 class="dash-panel-title">📅 My Registered Events</h3>
+                    <a href="events.html" class="btn btn-outline" style="color:var(--gold);border-color:var(--gold);padding:6px 16px;font-size:0.85rem;">Browse Events</a>
+                </div>
+                <div class="dash-panel-body">
+                    <div class="dash-skeleton"></div>
+                    <div id="dashboardEvents"></div>
+                </div>
+            </div>
+
+            <!-- Giving History -->
+            <div id="giving-section" class="dash-panel" data-aos="fade-up">
+                <div class="dash-panel-header">
+                    <h3 class="dash-panel-title">💳 Giving History</h3>
+                    <a href="give.html" class="btn btn-primary" style="padding:6px 16px;font-size:0.85rem;">Give Now</a>
+                </div>
+                <div class="dash-panel-body">
+                    <div class="dash-skeleton"></div>
+                    <div id="dashboardDonations"></div>
+                </div>
+            </div>
+
+            <!-- Prayer Requests -->
+            <div id="prayer-section" data-aos="fade-up">
+                <!-- Submit Form -->
+                <div class="prayer-form-panel">
+                    <h3>🙏 Submit a Prayer Request</h3>
+                    <form id="prayerForm">
+                        <div class="form-group" style="margin-bottom:16px;">
+                            <input type="text" id="prayerSubject" class="form-control" placeholder="Prayer subject (e.g., Healing, Breakthrough)" required>
+                        </div>
+                        <div class="form-group" style="margin-bottom:16px;">
+                            <textarea id="prayerMessage" class="form-control" rows="4" placeholder="Share your prayer need here..." required></textarea>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+                            <input type="checkbox" id="prayerAnonymous" style="width:18px;height:18px;cursor:pointer;">
+                            <label for="prayerAnonymous" style="color:var(--text-muted);font-size:0.9rem;cursor:pointer;">Submit anonymously</label>
+                        </div>
+                        <div id="prayerStatus" style="display:none;margin-bottom:16px;padding:12px 16px;border-radius:8px;font-weight:500;"></div>
+                        <button type="submit" id="prayerSubmitBtn" class="btn btn-primary">Submit Prayer Request</button>
+                    </form>
                 </div>
 
-                <div class="card card-glass">
-                    <div class="card-body">
-                        <div style="font-size: 2rem; margin-bottom: 16px;">💳</div>
-                        <h3 style="color: white; margin-bottom: 12px;">Manage Giving</h3>
-                        <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 0.95rem;">Update your partnership tier, view giving history, and download tax statements.</p>
-                        <a href="give.html" class="btn btn-secondary btn-block">Manage</a>
+                <!-- Prayer List -->
+                <div class="dash-panel">
+                    <div class="dash-panel-header">
+                        <h3 class="dash-panel-title">My Prayer Requests</h3>
+                    </div>
+                    <div class="dash-panel-body">
+                        <div class="dash-skeleton"></div>
+                        <div id="dashboardPrayers"></div>
                     </div>
                 </div>
             </div>
-        </div>
-    </main>
-    
+        </main>
+    </div>
+
     <!-- Footer -->
     <footer class="footer">
-        <div class="footer-bottom" style="background: #040914; color: rgba(255,255,255,0.4); padding: 24px 0; text-align: center; font-size: 0.85rem;">
+        <div class="footer-bottom" style="background:#040914;color:rgba(255,255,255,0.4);padding:20px 0;text-align:center;font-size:0.85rem;">
             <div class="container">
                 <p>&copy; 2024 Kingdom Advance Network International. All rights reserved.</p>
             </div>
         </div>
     </footer>
+
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof AOS !== 'undefined') AOS.init({ duration: 600, once: true });
+        });
+
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Update active nav
+            document.querySelectorAll('.dash-nav-item').forEach(b => b.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        // Remove skeleton loaders once data is rendered
+        setTimeout(() => {
+            document.querySelectorAll('.dash-skeleton').forEach(s => s.remove());
+        }, 3000);
+    </script>
 </body>
 </html>

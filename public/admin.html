@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KANI Admin Panel</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #0a0f1e;
+            --surface: #0d1a2f;
+            --surface2: #111e35;
+            --border: rgba(255,255,255,0.07);
+            --gold: #f59e0b;
+            --gold-dim: rgba(245,158,11,0.12);
+            --green: #10b981;
+            --red: #ef4444;
+            --blue: #6366f1;
+            --teal: #0ea5e9;
+            --text: #ffffff;
+            --muted: rgba(255,255,255,0.45);
+            --font: 'Inter', sans-serif;
+            --heading: 'Outfit', sans-serif;
+        }
+
+        body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; line-height: 1.6; min-height: 100vh; }
+
+        /* ─── LOGIN SCREEN ─── */
+        #loginScreen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(ellipse at 50% 0%, rgba(99,102,241,0.08) 0%, transparent 70%);
+        }
+        .login-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 48px;
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
+        .login-logo { font-family: var(--heading); font-size: 2rem; font-weight: 900; color: var(--gold); letter-spacing: 3px; margin-bottom: 6px; }
+        .login-subtitle { color: var(--muted); font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 40px; }
+        .login-title { font-family: var(--heading); color: white; font-size: 1.4rem; margin-bottom: 28px; }
+        .input-group { margin-bottom: 16px; text-align: left; }
+        .input-group label { display: block; color: var(--muted); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: white;
+            font-family: var(--font);
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .input-group input:focus { border-color: var(--gold); }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 20px; border-radius: 9px; font-family: var(--font); font-size: 0.875rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; }
+        .btn-primary { background: linear-gradient(135deg, #f59e0b, #d97706); color: #000; }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(245,158,11,0.3); }
+        .btn-ghost { background: rgba(255,255,255,0.06); color: white; border: 1px solid var(--border); }
+        .btn-ghost:hover { background: rgba(255,255,255,0.1); }
+        .btn-danger { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
+        .btn-danger:hover { background: rgba(239,68,68,0.25); }
+        .btn-success { background: rgba(16,185,129,0.15); color: var(--green); border: 1px solid rgba(16,185,129,0.2); }
+        .btn-block { width: 100%; }
+        #loginError { color: var(--red); font-size: 0.85rem; margin-top: 12px; min-height: 20px; }
+
+        /* ─── ADMIN LAYOUT ─── */
+        #adminApp { display: none; flex-direction: row; min-height: 100vh; }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            flex-shrink: 0;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 28px 16px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+        }
+        .sidebar-logo { text-align: center; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+        .sidebar-logo-text { font-family: var(--heading); font-size: 1.4rem; font-weight: 900; color: var(--gold); letter-spacing: 2px; }
+        .sidebar-logo-sub { font-size: 0.7rem; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
+        .nav-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); padding: 0 10px; margin-bottom: 8px; }
+        .nav-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 9px 12px; border-radius: 9px;
+            color: var(--muted); cursor: pointer;
+            transition: all 0.15s; border: none; background: none;
+            width: 100%; text-align: left; font-size: 0.875rem; font-weight: 500;
+            margin-bottom: 2px;
+        }
+        .nav-item:hover { background: rgba(255,255,255,0.05); color: white; }
+        .nav-item.active { background: var(--gold-dim); color: var(--gold); }
+        .nav-item .nav-icon { width: 18px; text-align: center; font-size: 1rem; }
+        .nav-badge { margin-left: auto; background: var(--gold); color: #000; font-size: 0.7rem; font-weight: 700; padding: 1px 7px; border-radius: 100px; }
+        .nav-divider { height: 1px; background: var(--border); margin: 16px 0; }
+        .sidebar-footer { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border); }
+
+        /* Main content */
+        .admin-main {
+            margin-left: 240px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Topbar */
+        .topbar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 20px 32px; border-bottom: 1px solid var(--border);
+            background: var(--surface);
+            position: sticky; top: 0; z-index: 50;
+        }
+        .topbar-title { font-family: var(--heading); font-size: 1.3rem; font-weight: 700; }
+        .topbar-actions { display: flex; align-items: center; gap: 12px; }
+        .admin-badge { background: var(--gold-dim); color: var(--gold); font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: 100px; letter-spacing: 1px; }
+
+        /* Page content */
+        .page-content { padding: 32px; flex: 1; }
+        .page { display: none; }
+        .page.active { display: block; }
+
+        /* Stat cards */
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            display: flex; flex-direction: column;
+        }
+        .stat-card-label { color: var(--muted); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .stat-card-value { font-family: var(--heading); font-size: 2rem; font-weight: 900; color: white; margin-bottom: 4px; }
+        .stat-card-sub { font-size: 0.8rem; color: var(--muted); }
+        .stat-gold .stat-card-value { color: var(--gold); }
+        .stat-green .stat-card-value { color: var(--green); }
+        .stat-blue .stat-card-value { color: var(--blue); }
+        .stat-teal .stat-card-value { color: var(--teal); }
+
+        /* Panel */
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+        .panel-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 18px 24px; border-bottom: 1px solid var(--border);
+        }
+        .panel-title { font-family: var(--heading); font-size: 1rem; font-weight: 700; }
+        .panel-body { overflow-x: auto; }
+
+        /* Table */
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 12px 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
+        td { padding: 13px 20px; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 0.875rem; vertical-align: middle; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: rgba(255,255,255,0.02); }
+
+        /* Badges */
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 100px; font-size: 0.75rem; font-weight: 600; text-transform: capitalize; }
+        .badge-new { background: rgba(99,102,241,0.15); color: var(--blue); }
+        .badge-read { background: rgba(16,185,129,0.12); color: var(--green); }
+        .badge-resolved { background: rgba(100,116,139,0.15); color: #94a3b8; }
+        .badge-pending { background: rgba(245,158,11,0.15); color: var(--gold); }
+        .badge-praying { background: rgba(99,102,241,0.15); color: var(--blue); }
+        .badge-answered { background: rgba(16,185,129,0.12); color: var(--green); }
+        .badge-success { background: rgba(16,185,129,0.12); color: var(--green); }
+        .badge-failed { background: rgba(239,68,68,0.12); color: var(--red); }
+        .badge-active { background: rgba(16,185,129,0.12); color: var(--green); }
+        .badge-inactive { background: rgba(100,116,139,0.12); color: #94a3b8; }
+        .badge-conference { background: rgba(245,158,11,0.12); color: var(--gold); }
+        .badge-prayer { background: rgba(99,102,241,0.12); color: var(--blue); }
+        .badge-training { background: rgba(16,185,129,0.12); color: var(--green); }
+        .badge-crusade { background: rgba(239,68,68,0.12); color: var(--red); }
+
+        /* Empty state */
+        .empty-state { text-align: center; padding: 56px 20px; color: var(--muted); }
+        .empty-state-icon { font-size: 2.5rem; margin-bottom: 12px; }
+        .empty-state p { max-width: 300px; margin: 0 auto; font-size: 0.9rem; }
+
+        /* Loading */
+        .loading { text-align: center; padding: 40px; color: var(--muted); }
+        .spinner { width: 32px; height: 32px; border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 12px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Event form */
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            color: white;
+            font-family: var(--font);
+            font-size: 0.875rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-control:focus { border-color: var(--gold); }
+        .form-control option { background: #1e293b; }
+        textarea.form-control { resize: vertical; min-height: 90px; }
+        .form-check { display: flex; align-items: center; gap: 10px; }
+        .form-check input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--gold); }
+        .form-check label { font-size: 0.875rem; color: var(--muted); cursor: pointer; }
+        .form-status { margin-top: 12px; font-size: 0.875rem; padding: 10px 14px; border-radius: 8px; }
+        .form-status.success { background: rgba(16,185,129,0.1); color: var(--green); }
+        .form-status.error { background: rgba(239,68,68,0.1); color: var(--red); }
+
+        /* Modal */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.open { display: flex; }
+        .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 32px; width: 100%; max-width: 580px; max-height: 90vh; overflow-y: auto; position: relative; }
+        .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+        .modal-title { font-family: var(--heading); font-size: 1.15rem; font-weight: 700; }
+        .modal-close { background: none; border: none; color: var(--muted); font-size: 1.5rem; cursor: pointer; line-height: 1; padding: 4px; }
+        .modal-close:hover { color: white; }
+        .modal-actions { display: flex; gap: 12px; margin-top: 24px; justify-content: flex-end; }
+
+        /* Toast */
+        #toast {
+            position: fixed; bottom: 24px; right: 24px;
+            padding: 14px 20px; border-radius: 10px;
+            font-size: 0.875rem; font-weight: 500;
+            z-index: 9999; transform: translateY(80px);
+            opacity: 0; transition: all 0.3s;
+            max-width: 360px;
+        }
+        #toast.show { transform: translateY(0); opacity: 1; }
+        #toast.success { background: rgba(16,185,129,0.9); color: white; }
+        #toast.error { background: rgba(239,68,68,0.9); color: white; }
+
+        /* Filter bar */
+        .filter-bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .filter-btn { padding: 6px 14px; border-radius: 100px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+        .filter-btn:hover { border-color: var(--gold); color: var(--gold); }
+        .filter-btn.active { background: var(--gold-dim); border-color: var(--gold); color: var(--gold); }
+
+        /* Search */
+        .search-input {
+            padding: 8px 14px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            color: white;
+            font-size: 0.875rem;
+            outline: none;
+            width: 220px;
+            transition: border-color 0.2s;
+        }
+        .search-input:focus { border-color: var(--gold); }
+
+        /* Expandable text */
+        .text-clamp { max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .text-muted { color: var(--muted); }
+
+        /* Actions column */
+        .actions { display: flex; gap: 6px; }
+
+        @media (max-width: 1024px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen">
+    <div class="login-card">
+        <div class="login-logo">KANI</div>
+        <div class="login-subtitle">Admin Panel</div>
+        <h2 class="login-title">Secure Access</h2>
+        <div class="input-group">
+            <label>Admin Token</label>
+            <input type="password" id="adminTokenInput" placeholder="Enter your admin token..." onkeypress="if(event.key==='Enter')adminLogin()">
+        </div>
+        <div id="loginError"></div>
+        <button class="btn btn-primary btn-block" style="margin-top:20px;" onclick="adminLogin()">Access Admin Panel →</button>
+    </div>
+</div>
+
+<!-- ADMIN APP -->
+<div id="adminApp">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="sidebar-logo-text">KANI</div>
+            <div class="sidebar-logo-sub">Admin Panel</div>
+        </div>
+        <div class="nav-label">Overview</div>
+        <button class="nav-item active" onclick="showPage('dashboard')" id="nav-dashboard">
+            <span class="nav-icon">📊</span> Dashboard
+        </button>
+        <div class="nav-divider"></div>
+        <div class="nav-label">Content</div>
+        <button class="nav-item" onclick="showPage('events')" id="nav-events">
+            <span class="nav-icon">📅</span> Events
+            <span class="nav-badge" id="navBadgeEvents">0</span>
+        </button>
+        <button class="nav-item" onclick="showPage('registrations')" id="nav-registrations">
+            <span class="nav-icon">📋</span> Registrations
+        </button>
+        <div class="nav-divider"></div>
+        <div class="nav-label">Engagement</div>
+        <button class="nav-item" onclick="showPage('contacts')" id="nav-contacts">
+            <span class="nav-icon">✉️</span> Contacts
+            <span class="nav-badge" id="navBadgeContacts">0</span>
+        </button>
+        <button class="nav-item" onclick="showPage('prayers')" id="nav-prayers">
+            <span class="nav-icon">🙏</span> Prayer Requests
+        </button>
+        <div class="nav-divider"></div>
+        <div class="nav-label">Finance & Community</div>
+        <button class="nav-item" onclick="showPage('donations')" id="nav-donations">
+            <span class="nav-icon">💳</span> Donations
+        </button>
+        <button class="nav-item" onclick="showPage('partners')" id="nav-partners">
+            <span class="nav-icon">🤝</span> Partners
+        </button>
+        <button class="nav-item" onclick="showPage('newsletter')" id="nav-newsletter">
+            <span class="nav-icon">📧</span> Newsletter
+        </button>
+        <div class="nav-divider"></div>
+        <div class="sidebar-footer">
+            <a href="index.html" class="nav-item" style="text-decoration:none;margin-bottom:8px;">
+                <span class="nav-icon">🌐</span> View Website
+            </a>
+            <button class="nav-item" onclick="adminLogout()" style="color:#ef4444;">
+                <span class="nav-icon">🚪</span> Log Out
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="admin-main">
+        <div class="topbar">
+            <div class="topbar-title" id="topbarTitle">Dashboard</div>
+            <div class="topbar-actions">
+                <span class="admin-badge">ADMIN</span>
+                <button class="btn btn-ghost" onclick="refreshCurrentPage()">↻ Refresh</button>
+            </div>
+        </div>
+
+        <div class="page-content">
+
+            <!-- DASHBOARD PAGE -->
+            <div class="page active" id="page-dashboard">
+                <div class="stats-grid" id="statsGrid">
+                    <div class="stat-card stat-gold"><div class="stat-card-label">Total Events</div><div class="stat-card-value" id="statEvents">—</div><div class="stat-card-sub">Scheduled</div></div>
+                    <div class="stat-card stat-green"><div class="stat-card-label">Total Given</div><div class="stat-card-value" id="statDonations">—</div><div class="stat-card-sub">Confirmed</div></div>
+                    <div class="stat-card stat-blue"><div class="stat-card-label">Partners</div><div class="stat-card-value" id="statPartners">—</div><div class="stat-card-sub">Registered</div></div>
+                    <div class="stat-card stat-teal"><div class="stat-card-label">Newsletter</div><div class="stat-card-value" id="statNewsletter">—</div><div class="stat-card-sub">Subscribers</div></div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="stat-card-label">Contacts</div><div class="stat-card-value" id="statContacts">—</div><div class="stat-card-sub">Messages received</div></div>
+                    <div class="stat-card"><div class="stat-card-label">Registrations</div><div class="stat-card-value" id="statRegistrations">—</div><div class="stat-card-sub">Across all events</div></div>
+                    <div class="stat-card"><div class="stat-card-label">Prayer Requests</div><div class="stat-card-value" id="statPrayers">—</div><div class="stat-card-sub">Submitted</div></div>
+                    <div class="stat-card"><div class="stat-card-label">Gifts Received</div><div class="stat-card-value" id="statDonationCount">—</div><div class="stat-card-sub">Successful transactions</div></div>
+                </div>
+            </div>
+
+            <!-- EVENTS PAGE -->
+            <div class="page" id="page-events">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">All Events</div>
+                        <button class="btn btn-primary" onclick="openEventModal()">+ Create Event</button>
+                    </div>
+                    <div class="panel-body">
+                        <div id="eventsTable"><div class="loading"><div class="spinner"></div><p>Loading events...</p></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REGISTRATIONS PAGE -->
+            <div class="page" id="page-registrations">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">Event Registrations</div>
+                        <div class="filter-bar" id="regEventFilter"></div>
+                    </div>
+                    <div class="panel-body">
+                        <div id="registrationsTable"><div class="loading"><div class="spinner"></div><p>Loading registrations...</p></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTACTS PAGE -->
+            <div class="page" id="page-contacts">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">Contact Messages</div>
+                        <div class="filter-bar">
+                            <button class="filter-btn active" onclick="filterContacts('all', this)">All</button>
+                            <button class="filter-btn" onclick="filterContacts('new', this)">New</button>
+                            <button class="filter-btn" onclick="filterContacts('read', this)">Read</button>
+                            <button class="filter-btn" onclick="filterContacts('resolved', this)">Resolved</button>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div id="contactsTable"><div class="loading"><div class="spinner"></div><p>Loading messages...</p></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRAYER REQUESTS PAGE -->
+            <div class="page" id="page-prayers">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">Prayer Requests</div>
+                        <div class="filter-bar">
+                            <button class="filter-btn active" onclick="filterPrayers('all', this)">All</button>
+                            <button class="filter-btn" onclick="filterPrayers('pending', this)">Pending</button>
+                            <button class="filter-btn" onclick="filterPrayers('praying', this)">Praying</button>
+                            <button class="filter-btn" onclick="filterPrayers('answered', this)">Answered</button>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div id="prayersTable"><div class="loading"><div class="spinner"></div><p>Loading prayer requests...</p></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DONATIONS PAGE -->
+            <div class="page" id="page-donations">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">Donation Records</div>
+                        <input class="search-input" id="donationSearch" placeholder="🔍 Search by email..." oninput="searchDonations(this.value)">
+                    </div>
+                    <div class="panel-body">
+                        <div id="donationsTable"><div class="loading"><div class="spinner"></div><p>Loading donations...</p></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PARTNERS PAGE -->
+            <div class="page" id="page-partners">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">Registered Partners</div>
+                        <input class="search-input" id="partnerSearch" placeholder="🔍 Search by name/email..." oninput="searchPartners(this.value)">
+                    </div>
+                    <div class="panel-body">
+                        <div id="partnersTable"><div class="loading"><div class="spinner"></div><p>Loading partners...</p></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NEWSLETTER PAGE -->
+            <div class="page" id="page-newsletter">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">Newsletter Subscribers</div>
+                        <input class="search-input" id="newsletterSearch" placeholder="🔍 Search..." oninput="searchNewsletter(this.value)">
+                    </div>
+                    <div class="panel-body">
+                        <div id="newsletterTable"><div class="loading"><div class="spinner"></div><p>Loading subscribers...</p></div></div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /page-content -->
+    </div><!-- /admin-main -->
+
+</div><!-- /adminApp -->
+
+<!-- EVENT MODAL -->
+<div class="modal-overlay" id="eventModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title" id="eventModalTitle">Create New Event</h3>
+            <button class="modal-close" onclick="closeEventModal()">×</button>
+        </div>
+        <form id="eventForm" onsubmit="submitEventForm(event)">
+            <input type="hidden" id="eventFormId">
+            <div class="form-row">
+                <div class="form-group" style="grid-column:1/-1;">
+                    <label>Event Title *</label>
+                    <input type="text" id="evTitle" class="form-control" placeholder="Night of Kingdom Power..." required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="evDescription" class="form-control" placeholder="Describe the event..."></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Start Date & Time *</label>
+                    <input type="datetime-local" id="evDate" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>End Date & Time</label>
+                    <input type="datetime-local" id="evEndDate" class="form-control">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Location *</label>
+                    <input type="text" id="evLocation" class="form-control" placeholder="Nairobi, Kenya" required>
+                </div>
+                <div class="form-group">
+                    <label>Event Type *</label>
+                    <select id="evType" class="form-control" required>
+                        <option value="General">General</option>
+                        <option value="Prayer">Prayer</option>
+                        <option value="Conference">Conference</option>
+                        <option value="Training">Training</option>
+                        <option value="Crusade">Crusade</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Capacity (leave empty for unlimited)</label>
+                    <input type="number" id="evCapacity" class="form-control" placeholder="500" min="1">
+                </div>
+                <div class="form-group" style="display:flex;align-items:flex-end;padding-bottom:2px;">
+                    <div>
+                        <div class="form-check" style="margin-bottom:10px;">
+                            <input type="checkbox" id="evIsOnline">
+                            <label for="evIsOnline">Online event</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" id="evIsActive" checked>
+                            <label for="evIsActive">Active (visible to public)</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" id="onlineLinkGroup" style="display:none;">
+                <label>Online Link (Zoom/YouTube)</label>
+                <input type="url" id="evOnlineLink" class="form-control" placeholder="https://zoom.us/...">
+            </div>
+            <div class="form-status" id="eventFormStatus" style="display:none;"></div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-ghost" onclick="closeEventModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="eventFormBtn">Create Event</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- CONTACT DETAIL MODAL -->
+<div class="modal-overlay" id="contactModal">
+    <div class="modal" style="max-width:640px;">
+        <div class="modal-header">
+            <h3 class="modal-title">Message Details</h3>
+            <button class="modal-close" onclick="closeContactModal()">×</button>
+        </div>
+        <div id="contactModalBody"></div>
+    </div>
+</div>
+
+<!-- PRAYER DETAIL MODAL -->
+<div class="modal-overlay" id="prayerModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">Prayer Request</h3>
+            <button class="modal-close" onclick="closePrayerModal()">×</button>
+        </div>
+        <div id="prayerModalBody"></div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script src="js/admin.js"></script>
+</body>
+</html>

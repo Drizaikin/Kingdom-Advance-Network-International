@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Events | KANI</title>
+    <title>Events | KANI — Kingdom Advance Network International</title>
+    <meta name="description" content="Join KANI's upcoming prayer meetings, conferences, crusades and leadership trainings. Register for events that will transform your life and ministry.">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="styles/variables.css">
@@ -14,6 +15,102 @@
     <link rel="stylesheet" href="styles/footer.css">
     <link rel="stylesheet" href="styles/events.css">
     <link rel="stylesheet" href="styles/responsive.css">
+    <style>
+        /* Event filter pills */
+        .event-filters-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 40px;
+            justify-content: center;
+        }
+        .event-filter-pill {
+            padding: 8px 22px;
+            border-radius: 100px;
+            border: 1.5px solid rgba(255,255,255,0.15);
+            background: transparent;
+            color: var(--text-muted);
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+        .event-filter-pill:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+        .event-filter-pill.active {
+            background: var(--gradient-gold);
+            border-color: transparent;
+            color: var(--midnight);
+            font-weight: 700;
+        }
+        /* Full event card */
+        .event-card-full {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 24px;
+            align-items: center;
+            padding: 28px 32px;
+        }
+        .event-date-year {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .event-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .event-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 12px;
+        }
+        .event-meta-item {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+        /* Loading */
+        .events-loading {
+            text-align: center;
+            width: 100%;
+            padding: 80px 20px;
+            color: var(--text-muted);
+        }
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        /* Empty state */
+        .events-empty {
+            text-align: center;
+            width: 100%;
+            padding: 80px 20px;
+            color: var(--text-muted);
+        }
+        .events-empty-icon { font-size: 3rem; margin-bottom: 16px; }
+        .events-empty h3 { color: white; font-family: var(--font-heading); margin-bottom: 12px; }
+        .events-empty p { max-width: 400px; margin: 0 auto 24px; }
+        @media (max-width: 768px) {
+            .event-card-full {
+                grid-template-columns: auto 1fr;
+                grid-template-rows: auto auto;
+            }
+            .event-action { grid-column: 1 / -1; }
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar" id="navbar">
@@ -69,55 +166,76 @@
         <section class="page-hero events-hero">
             <div class="container text-center" data-aos="fade-up">
                 <h1 class="hero-home-title text-white">Upcoming <span style="color: var(--gold);">Events</span></h1>
-                <p class="hero-home-subtitle text-muted" style="margin: 0 auto;">Join us as we gather to encounter God and advance His kingdom.</p>
+                <p class="hero-home-subtitle text-muted" style="margin: 0 auto;">Join us as we gather to encounter God and advance His kingdom across the nations.</p>
             </div>
         </section>
 
-        <section class="section section-dark" style="padding-top: 0;">
+        <section class="section section-dark" style="padding-top: 60px;">
             <div class="container">
-                
+                <!-- Filter Pills -->
+                <div id="eventFilters" class="event-filters-bar" data-aos="fade-up"></div>
+
                 <!-- Dynamic Events Container -->
                 <div id="eventsList" class="event-card-list">
-                    <div style="text-align: center; width: 100%;">
+                    <div class="events-loading">
+                        <div class="loading-spinner"></div>
                         <p>Loading upcoming events...</p>
                     </div>
                 </div>
-
             </div>
         </section>
 
         <!-- Registration Modal -->
-        <div id="registrationModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
-            <div class="card card-glass" style="max-width: 500px; width: 100%; position: relative;">
-                <button onclick="closeRegistrationModal()" style="position: absolute; right: 20px; top: 20px; background: none; border: none; color: white; font-size: 24px; cursor: pointer;">&times;</button>
-                <div class="card-body">
-                    <h3 style="color: white; margin-bottom: 8px;">Register for Event</h3>
-                    <p id="regEventTitle" style="color: var(--gold); margin-bottom: 24px; font-weight: 600;"></p>
-                    
+        <div id="registrationModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;align-items:center;justify-content:center;padding:20px;">
+            <div class="card card-glass" style="max-width:520px;width:100%;position:relative;border:1px solid rgba(255,255,255,0.1);">
+                <button onclick="closeRegistrationModal()" style="position:absolute;right:20px;top:20px;background:none;border:none;color:white;font-size:28px;cursor:pointer;line-height:1;">&times;</button>
+                <div class="card-body" style="padding:40px;">
+                    <h3 style="color:white;margin-bottom:6px;font-family:var(--font-heading);">Register for Event</h3>
+                    <p id="regEventTitle" style="color:var(--gold);margin-bottom:28px;font-weight:600;font-size:1rem;"></p>
+
                     <form id="eventRegForm">
                         <input type="hidden" id="regEventId">
-                        <div class="grid-2" style="gap: 16px; margin-bottom: 16px;">
-                            <div class="form-group" style="margin-bottom: 0;">
+                        <div class="grid-2" style="gap:16px;margin-bottom:16px;">
+                            <div class="form-group" style="margin-bottom:0;">
                                 <input type="text" id="regFirstName" class="form-control" placeholder="First Name" required>
                             </div>
-                            <div class="form-group" style="margin-bottom: 0;">
+                            <div class="form-group" style="margin-bottom:0;">
                                 <input type="text" id="regLastName" class="form-control" placeholder="Last Name" required>
                             </div>
                         </div>
-                        <div class="form-group" style="margin-bottom: 24px;">
+                        <div class="form-group" style="margin-bottom:16px;">
                             <input type="email" id="regEmail" class="form-control" placeholder="Email Address" required>
                         </div>
-                        <div id="regStatus" style="margin-bottom: 16px; display: none; font-weight: 500;"></div>
+                        <div class="form-group" style="margin-bottom:24px;">
+                            <input type="tel" id="regPhone" class="form-control" placeholder="Phone Number (optional)">
+                        </div>
+                        <div id="regStatus" style="margin-bottom:16px;display:none;font-weight:500;padding:10px 14px;border-radius:8px;"></div>
                         <button type="submit" id="regSubmitBtn" class="btn btn-primary btn-block">Confirm Registration</button>
                     </form>
                 </div>
             </div>
         </div>
     </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-bottom" style="background:#040914;color:rgba(255,255,255,0.4);padding:24px 0;text-align:center;font-size:0.85rem;">
+            <div class="container">
+                <p>&copy; 2024 Kingdom Advance Network International. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="js/navigation.js"></script>
     <script src="js/components.js"></script>
+    <script src="js/events.js"></script>
     <script src="js/main.js"></script>
+    <script>
+        // Init AOS after content loads
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof AOS !== 'undefined') AOS.init({ duration: 700, once: true, offset: 30 });
+        });
+    </script>
 </body>
 </html>
-
