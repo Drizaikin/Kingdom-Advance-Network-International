@@ -345,6 +345,11 @@
             <span class="nav-icon">📧</span> Newsletter
         </button>
         <div class="nav-divider"></div>
+        <div class="nav-label">System</div>
+        <button class="nav-item" onclick="showPage('settings')" id="nav-settings">
+            <span class="nav-icon">⚙️</span> Settings
+        </button>
+        <div class="nav-divider"></div>
         <div class="sidebar-footer">
             <a href="index.html" class="nav-item" style="text-decoration:none;margin-bottom:8px;">
                 <span class="nav-icon">🌐</span> View Website
@@ -493,6 +498,30 @@
                     </div>
                     <div class="panel-body">
                         <div id="newsletterTable"><div class="loading"><div class="spinner"></div><p>Loading subscribers...</p></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SETTINGS PAGE -->
+            <div class="page" id="page-settings">
+                <div class="panel" style="max-width: 600px;">
+                    <div class="panel-header">
+                        <div class="panel-title">Admin Profile & Settings</div>
+                    </div>
+                    <div class="panel-body" style="padding: 24px;">
+                        <form id="settingsForm" onsubmit="submitSettings(event)">
+                            <div class="form-group">
+                                <label>Admin Email</label>
+                                <input type="email" id="setAdminEmail" class="form-control" placeholder="admin@kaniglobal.org" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Admin Token (Password)</label>
+                                <input type="text" id="setAdminToken" class="form-control" placeholder="Enter new secret token..." required>
+                                <p style="font-size: 0.75rem; color: var(--muted); margin-top: 6px;">Changing this will log you out and require you to log in with the new token.</p>
+                            </div>
+                            <div class="form-status" id="settingsStatus" style="display:none;"></div>
+                            <button type="submit" class="btn btn-primary" id="settingsBtn" style="margin-top: 16px;">Save Settings</button>
+                        </form>
                     </div>
                 </div>
             </div>

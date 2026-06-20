@@ -103,6 +103,7 @@
             donations: 'Donation Records',
             partners: 'Registered Partners',
             newsletter: 'Newsletter Subscribers',
+            settings: 'Admin Profile & Settings',
         }[page] || page;
 
         currentPage = page;
@@ -128,6 +129,7 @@
             case 'partners': return loadPartners();
             case 'newsletter': return loadNewsletter();
             case 'blogs': return loadBlogs();
+            case 'settings': return loadSettings();
         }
     }
 
@@ -811,11 +813,11 @@
         statusEl.style.display = 'none';
         try {
             const method = blogId ? 'PUT' : 'POST';
-            const url = blogId ? \`/api/admin/blogs/\${blogId}\` : '/api/admin/blogs';
+            const url = blogId ? `/api/admin/blogs/${blogId}` : '/api/admin/blogs';
             const res = await fetch(url, { method, headers: adminHeaders(), body: JSON.stringify(payload) });
             const result = await res.json();
             if (result.success) {
-                toast(\`Blog \${blogId ? 'updated' : 'created'} successfully! ✅\`, 'success');
+                toast(`Blog ${blogId ? 'updated' : 'created'} successfully! ✅`, 'success');
                 closeBlogModal();
                 delete cache['blogs'];
                 loadBlogs();
@@ -835,9 +837,9 @@
     };
 
     window.deleteBlog = async function(id, title) {
-        if (!confirm(\`Delete "\${title}" permanently?\`)) return;
+        if (!confirm(`Delete "${title}" permanently?`)) return;
         try {
-            const res = await fetch(\`/api/admin/blogs/\${id}\`, { method: 'DELETE', headers: adminHeaders() });
+            const res = await fetch(`/api/admin/blogs/${id}`, { method: 'DELETE', headers: adminHeaders() });
             const result = await res.json();
             if (result.success) {
                 toast('Blog deleted. ✅', 'success');
@@ -848,6 +850,64 @@
             }
         } catch (err) {
             toast('Network error.', 'error');
+        }
+    };
+
+    // ──────────────────────────────────────────────
+    // SETTINGS
+    // ──────────────────────────────────────────────
+    async function loadSettings() {
+        try {
+            const res = await fetch('/api/admin/settings', { headers: adminHeaders() });
+            const result = await res.json();
+            if (result.success) {
+                document.getElementById('setAdminEmail').value = result.data.adminEmail || '';
+                document.getElementById('setAdminToken').value = result.data.adminToken || '';
+                cache['settings'] = true;
+            } else {
+                toast('Error loading settings', 'error');
+            }
+        } catch (err) {
+            toast('Network error loading settings', 'error');
+        }
+    }
+
+    window.submitSettings = async function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('settingsBtn');
+        const statusEl = document.getElementById('settingsStatus');
+        const payload = {
+            adminEmail: document.getElementById('setAdminEmail').value.trim(),
+            adminToken: document.getElementById('setAdminToken').value.trim()
+        };
+
+        btn.textContent = 'Saving...';
+        btn.disabled = true;
+        statusEl.style.display = 'none';
+
+        try {
+            const res = await fetch('/api/admin/settings', {
+                method: 'PUT',
+                headers: adminHeaders(),
+                body: JSON.stringify(payload)
+            });
+            const result = await res.json();
+            if (result.success) {
+                toast(result.message, 'success');
+                // The token changed, so log out after a brief delay
+                setTimeout(() => adminLogout(), 2500);
+            } else {
+                statusEl.textContent = '❌ ' + result.error;
+                statusEl.className = 'form-status error';
+                statusEl.style.display = 'block';
+            }
+        } catch (err) {
+            statusEl.textContent = '❌ Network error.';
+            statusEl.className = 'form-status error';
+            statusEl.style.display = 'block';
+        } finally {
+            btn.textContent = 'Save Settings';
+            btn.disabled = false;
         }
     };
 

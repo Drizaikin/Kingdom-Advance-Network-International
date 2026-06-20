@@ -4,6 +4,7 @@ const cors = require('cors');
 const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
 const rateLimit = require('express-rate-limit');
+const fs = require('fs');
 const nodemailer = require('nodemailer');
 const https = require('https');
 require('dotenv').config();
@@ -134,7 +135,8 @@ app.get('/api/health', (req, res) => {
 app.get('/api/config', (req, res) => {
     res.json({
         supabaseUrl: process.env.SUPABASE_URL,
-        supabaseAnonKey: process.env.SUPABASE_ANON_KEY
+        supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
+        googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY
     });
 });
 
@@ -662,6 +664,55 @@ app.post('/api/admin/login', authLimiter, (req, res) => {
         res.json({ success: true, token, message: 'Admin access granted.' });
     } else {
         res.status(401).json({ success: false, error: 'Invalid admin token.' });
+    }
+});
+
+// Admin settings (Get)
+app.get('/api/admin/settings', authenticateAdmin, (req, res) => {
+    res.json({
+        success: true,
+        data: {
+            adminEmail: process.env.ADMIN_EMAIL || '',
+            adminToken: process.env.ADMIN_TOKEN || ''
+        }
+    });
+});
+
+// Admin settings (Update)
+app.put('/api/admin/settings', authenticateAdmin, (req, res) => {
+    const { adminEmail, adminToken } = req.body;
+    if (!adminEmail || !adminToken) {
+        return res.status(400).json({ success: false, error: 'Email and Token are required' });
+    }
+    
+    try {
+        const envPath = path.join(__dirname, '.env');
+        if (fs.existsSync(envPath)) {
+            let envContent = fs.readFileSync(envPath, 'utf8');
+            
+            // Update values using regex
+            if (/^ADMIN_TOKEN=/m.test(envContent)) {
+                envContent = envContent.replace(/^ADMIN_TOKEN=.*$/m, `ADMIN_TOKEN=${adminToken}`);
+            } else {
+                envContent += `\nADMIN_TOKEN=${adminToken}`;
+            }
+            
+            if (/^ADMIN_EMAIL=/m.test(envContent)) {
+                envContent = envContent.replace(/^ADMIN_EMAIL=.*$/m, `ADMIN_EMAIL=${adminEmail}`);
+            } else {
+                envContent += `\nADMIN_EMAIL=${adminEmail}`;
+            }
+            
+            fs.writeFileSync(envPath, envContent);
+        }
+        
+        // Update in memory so server doesn't need to restart
+        process.env.ADMIN_TOKEN = adminToken;
+        process.env.ADMIN_EMAIL = adminEmail;
+        
+        res.json({ success: true, message: 'Settings updated successfully. Please log in again with your new token.' });
+    } catch (err) {
+        res.status(500).json({ success: false, error: 'Failed to update settings file: ' + err.message });
     }
 });
 

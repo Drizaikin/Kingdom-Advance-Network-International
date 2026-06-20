@@ -81,8 +81,20 @@
                         <h2 class="text-white">Our Global Footprint</h2>
                         <p>Interactive map showing our active mission fields across 42 nations.</p>
                     </div>
-                    <div id="globeViz" class="map-placeholder" style="height: 60vh; max-height: 600px; min-height: 400px; width: 100%; border-radius: var(--radius-xl); overflow: hidden; background: #000;">
-                        <!-- Globe will render here -->
+                    <div style="position: relative; height: 60vh; max-height: 600px; min-height: 400px; width: 100%; border-radius: var(--radius-xl); overflow: hidden; background: #000;">
+                        <!-- Globe Container -->
+                        <div id="globeViz" style="position: absolute; top:0; left:0; width:100%; height:100%; z-index: 2; transition: opacity 1.5s ease-in-out;"></div>
+                        
+                        <!-- Google Map Container -->
+                        <div id="googleMapViz" style="position: absolute; top:0; left:0; width:100%; height:100%; z-index: 1; opacity: 0; transition: opacity 1.5s ease-in-out; display: flex; align-items: center; justify-content: center; flex-direction: column; text-align: center; padding: 20px;">
+                            <h3 style="color: white; margin-bottom: 10px;">Street View Requires Google Maps API Key</h3>
+                            <p style="color: #ccc;">Please add your API key to the .env file to view the detailed live map boundaries.</p>
+                        </div>
+                        
+                        <!-- Return Button -->
+                        <button id="returnToOrbitBtn" class="btn btn-primary" style="position: absolute; top: 20px; right: 20px; z-index: 10; display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" onclick="crossfadeToOrbit()">
+                            🚀 Return to Orbit
+                        </button>
                     </div>
                 </div>
             </div>
@@ -157,25 +169,62 @@
         </div>
     </footer>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="https://unpkg.com/globe.gl"></script>
+    <script src="https://unpkg.com/three@0.150.0/build/three.min.js"></script>
+    <script src="https://unpkg.com/globe.gl@2.30.0/dist/globe.gl.min.js"></script>
     <script src="js/navigation.js"></script>
     <script src="js/main.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
+        let googleMap = null;
+        let googleMapMarkers = [];
+
+        // Dual-Layer Crossfade Architecture
+        window.crossfadeToMap = function(lat, lng) {
+            document.getElementById('globeViz').style.opacity = 0;
+            document.getElementById('globeViz').style.pointerEvents = 'none';
+            document.getElementById('googleMapViz').style.opacity = 1;
+            document.getElementById('googleMapViz').style.pointerEvents = 'auto';
+            document.getElementById('returnToOrbitBtn').style.display = 'block';
+
+            if (googleMap) {
+                googleMap.setCenter({ lat, lng });
+                googleMap.setZoom(14);
+            }
+        };
+
+        window.crossfadeToOrbit = function() {
+            document.getElementById('globeViz').style.opacity = 1;
+            document.getElementById('globeViz').style.pointerEvents = 'auto';
+            document.getElementById('googleMapViz').style.opacity = 0;
+            document.getElementById('googleMapViz').style.pointerEvents = 'none';
+            document.getElementById('returnToOrbitBtn').style.display = 'none';
+        };
+
+        async function initMissionsMap() {
+            // 1. Fetch Config & API Key
+            let googleMapsKey = '';
+            try {
+                const configRes = await fetch('/api/config');
+                const configData = await configRes.json();
+                if (configData.googleMapsApiKey) {
+                    googleMapsKey = configData.googleMapsApiKey;
+                }
+            } catch (err) {
+                console.error('Failed to fetch config', err);
+            }
+
+            // 2. Fetch Event Data
             let gData = [];
             try {
-                // Fetch real locations from events API
                 const res = await fetch('/api/events?all_dates=true');
                 const result = await res.json();
-                
                 if (result.success && result.data) {
                     gData = result.data
                         .filter(ev => ev.latitude && ev.longitude)
                         .map(ev => ({
                             lat: parseFloat(ev.latitude),
                             lng: parseFloat(ev.longitude),
-                            size: 0.3, // You can make this dynamic based on event capacity
-                            color: '#d4a017', // Gold color for KANI brand
+                            size: 0.3,
+                            color: '#d4a017',
                             title: ev.title
                         }));
                 }
@@ -183,16 +232,52 @@
                 console.error("Failed to load map data", err);
             }
 
-            // Fallback if no real data yet
             if (gData.length === 0) {
                 gData = [{ lat: -1.286389, lng: 36.817223, size: 0.4, color: '#d4a017', title: 'KANI HQ (Nairobi)' }];
             }
 
-            const GlobeObj = Globe()
-                (document.getElementById('globeViz'))
+            // 3. Initialize Google Maps (if key is present)
+            if (googleMapsKey) {
+                const script = document.createElement('script');
+                script.src = `https://maps.googleapis.com/maps/api/js?key=${googleMapsKey}&callback=initGoogleMap`;
+                script.async = true;
+                script.defer = true;
+                
+                window.initGoogleMap = function() {
+                    const mapOptions = {
+                        zoom: 2,
+                        center: { lat: 0, lng: 0 },
+                        mapTypeId: 'hybrid', // Shows satellite with labels/boundaries
+                        disableDefaultUI: false,
+                        zoomControl: true,
+                        backgroundColor: '#000000',
+                    };
+                    googleMap = new google.maps.Map(document.getElementById('googleMapViz'), mapOptions);
+
+                    // Add pins to Google Map
+                    gData.forEach(ev => {
+                        const marker = new google.maps.Marker({
+                            position: { lat: ev.lat, lng: ev.lng },
+                            map: googleMap,
+                            title: ev.title
+                        });
+                        
+                        // Let users click Google Map pins too
+                        marker.addListener('click', () => {
+                            googleMap.setZoom(16);
+                            googleMap.setCenter(marker.getPosition());
+                        });
+                    });
+                };
+                document.head.appendChild(script);
+            }
+
+            // 4. Initialize Globe.gl
+            const el = document.getElementById('globeViz');
+            const GlobeObj = Globe()(el)
                 .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
                 .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
-                .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+                .backgroundColor('rgba(0,0,0,0)') // Transparent to show ThreeJS background
                 .labelsData(gData)
                 .labelLat('lat')
                 .labelLng('lng')
@@ -200,21 +285,337 @@
                 .labelSize('size')
                 .labelDotRadius(0.8)
                 .labelColor('color')
-                .labelResolution(2);
+                .labelResolution(2)
+                .onLabelClick((label) => {
+                    crossfadeToMap(label.lat, label.lng);
+                });
 
             // Auto-rotate
             GlobeObj.controls().autoRotate = true;
             GlobeObj.controls().autoRotateSpeed = 0.5;
 
+            // 5. Build the Realistic Solar System (Three.js)
+            setTimeout(() => {
+                const scene = GlobeObj.scene();
+                const camera = GlobeObj.camera();
+                if (scene && THREE && camera) {
+                    // Fix camera clipping plane so we can see far away objects!
+                    camera.far = 100000;
+                    camera.updateProjectionMatrix();
+
+                    // Add strong ambient light
+                    scene.add(new THREE.AmbientLight(0xffffff, 2.0));
+
+                    // a. Realistic Space Background
+                    const textureLoader = new THREE.TextureLoader();
+                    textureLoader.load('//unpkg.com/three-globe/example/img/night-sky.png', (texture) => {
+                        const bgGeometry = new THREE.SphereGeometry(30000, 64, 64);
+                        const bgMaterial = new THREE.MeshBasicMaterial({
+                            map: texture,
+                            side: THREE.BackSide,
+                            transparent: true,
+                            opacity: 0.9,
+                            depthWrite: false // Prevent it from occluding things
+                        });
+                        scene.add(new THREE.Mesh(bgGeometry, bgMaterial));
+                    });
+
+                    // b. The Sun (Massive, Stationary Anchor)
+                    const sunGeometry = new THREE.SphereGeometry(800, 64, 64);
+                    const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff }); // Fallback color
+                    textureLoader.load('assets/textures/2k_sun.jpg', (tex) => {
+                        sunMaterial.map = tex;
+                        sunMaterial.needsUpdate = true;
+                    });
+                    const sun = new THREE.Mesh(sunGeometry, sunMaterial);
+                    sun.position.set(-4000, 500, -3000); // Anchor deep in background
+                    scene.add(sun);
+                    
+                    const sunLight = new THREE.PointLight(0xffffff, 150000, 0); // Very bright
+                    sun.add(sunLight);
+
+                    // c. Mercury (Orbiting Sun)
+                    const mercuryGeometry = new THREE.SphereGeometry(25, 32, 32);
+                    const mercuryMaterial = new THREE.MeshStandardMaterial({ color: 0xaaaaaa, roughness: 0.8 });
+                    textureLoader.load('assets/textures/2k_mercury.jpg', (tex) => {
+                        mercuryMaterial.map = tex;
+                        mercuryMaterial.needsUpdate = true;
+                    });
+                    const mercury = new THREE.Mesh(mercuryGeometry, mercuryMaterial);
+                    scene.add(mercury);
+
+                    // d. Venus (Orbiting Sun)
+                    const venusGeometry = new THREE.SphereGeometry(60, 32, 32);
+                    const venusMaterial = new THREE.MeshStandardMaterial({ color: 0xe3bb76, roughness: 0.9 });
+                    textureLoader.load('assets/textures/2k_venus_atmosphere.jpg', (tex) => {
+                        venusMaterial.map = tex;
+                        venusMaterial.needsUpdate = true;
+                    });
+                    const venus = new THREE.Mesh(venusGeometry, venusMaterial);
+                    scene.add(venus);
+
+                    // e. Mars (Orbiting Sun)
+                    const marsGeometry = new THREE.SphereGeometry(45, 32, 32);
+                    const marsMaterial = new THREE.MeshStandardMaterial({ color: 0xc1440e, roughness: 0.8 });
+                    textureLoader.load('assets/textures/2k_mars.jpg', (tex) => {
+                        marsMaterial.map = tex;
+                        marsMaterial.needsUpdate = true;
+                    });
+                    const mars = new THREE.Mesh(marsGeometry, marsMaterial);
+                    scene.add(mars);
+
+                    // f. Jupiter (Orbiting Sun)
+                    const jupiterGeometry = new THREE.SphereGeometry(180, 64, 64);
+                    const jupiterMaterial = new THREE.MeshStandardMaterial({ color: 0xb5a08c, roughness: 0.5 });
+                    textureLoader.load('assets/textures/2k_jupiter.jpg', (tex) => {
+                        jupiterMaterial.map = tex;
+                        jupiterMaterial.needsUpdate = true;
+                    });
+                    const jupiter = new THREE.Mesh(jupiterGeometry, jupiterMaterial);
+                    scene.add(jupiter);
+
+                    // g. Saturn & Rings (Orbiting Sun)
+                    const saturnGroup = new THREE.Group();
+                    const saturnGeometry = new THREE.SphereGeometry(150, 64, 64);
+                    const saturnMaterial = new THREE.MeshStandardMaterial({ color: 0xe2bf7d, roughness: 0.5 });
+                    textureLoader.load('assets/textures/2k_saturn.jpg', (tex) => {
+                        saturnMaterial.map = tex;
+                        saturnMaterial.needsUpdate = true;
+                    });
+                    const saturn = new THREE.Mesh(saturnGeometry, saturnMaterial);
+                    saturnGroup.add(saturn);
+
+                    const saturnRingGeometry = new THREE.RingGeometry(180, 320, 64);
+                    const saturnRingMaterial = new THREE.MeshStandardMaterial({
+                        color: 0xddccaa,
+                        side: THREE.DoubleSide,
+                        transparent: true,
+                        opacity: 0.7
+                    });
+                    textureLoader.load('assets/textures/2k_saturn_ring_alpha.png', (tex) => {
+                        saturnRingMaterial.alphaMap = tex;
+                        saturnRingMaterial.needsUpdate = true;
+                    });
+                    const saturnRingMesh = new THREE.Mesh(saturnRingGeometry, saturnRingMaterial);
+                    saturnRingMesh.rotation.x = Math.PI / 2 - 0.2; // Tilt Saturn's rings
+                    saturnGroup.add(saturnRingMesh);
+                    saturnGroup.rotation.z = 0.4; // Tilt Saturn's axis
+                    scene.add(saturnGroup);
+
+                    // h. Uranus & Rings (Orbiting Sun)
+                    const uranusGroup = new THREE.Group();
+                    const uranusGeometry = new THREE.SphereGeometry(80, 64, 64);
+                    const uranusMaterial = new THREE.MeshStandardMaterial({ color: 0x7ebee0, roughness: 0.6 });
+                    textureLoader.load('assets/textures/2k_uranus.jpg', (tex) => {
+                        uranusMaterial.map = tex;
+                        uranusMaterial.needsUpdate = true;
+                    });
+                    const uranus = new THREE.Mesh(uranusGeometry, uranusMaterial);
+                    uranusGroup.add(uranus);
+
+                    const uranusRingGeometry = new THREE.RingGeometry(110, 160, 64);
+                    const uranusRingMaterial = new THREE.MeshStandardMaterial({
+                        color: 0x88ccff,
+                        side: THREE.DoubleSide,
+                        transparent: true,
+                        opacity: 0.35
+                    });
+                    const uranusRingMesh = new THREE.Mesh(uranusRingGeometry, uranusRingMaterial);
+                    uranusRingMesh.rotation.x = Math.PI / 2 - 1.6; // Uranus rings are tilted almost 98 degrees
+                    uranusRingMesh.rotation.y = 0.2;
+                    uranusGroup.add(uranusRingMesh);
+                    scene.add(uranusGroup);
+
+                    // i. Neptune (Orbiting Sun)
+                    const neptuneGeometry = new THREE.SphereGeometry(75, 64, 64);
+                    const neptuneMaterial = new THREE.MeshStandardMaterial({ color: 0x3d64c1, roughness: 0.5 });
+                    textureLoader.load('assets/textures/2k_neptune.jpg', (tex) => {
+                        neptuneMaterial.map = tex;
+                        neptuneMaterial.needsUpdate = true;
+                    });
+                    const neptune = new THREE.Mesh(neptuneGeometry, neptuneMaterial);
+                    scene.add(neptune);
+
+                    // j. Asteroid Belt (Orbiting Sun between Mars and Jupiter)
+                    const asteroidCount = 1500;
+                    const asteroidGeometry = new THREE.BufferGeometry();
+                    const asteroidPositions = new Float32Array(asteroidCount * 3);
+                    for (let i = 0; i < asteroidCount; i++) {
+                        const r = 2800 + Math.random() * 500;
+                        const theta = Math.random() * Math.PI * 2;
+                        const y = (Math.random() - 0.5) * 60;
+                        asteroidPositions[i * 3] = Math.cos(theta) * r;
+                        asteroidPositions[i * 3 + 1] = y;
+                        asteroidPositions[i * 3 + 2] = Math.sin(theta) * r;
+                    }
+                    asteroidGeometry.setAttribute('position', new THREE.BufferAttribute(asteroidPositions, 3));
+                    const asteroidMaterial = new THREE.PointsMaterial({
+                        size: 5,
+                        color: 0xa58d75,
+                        transparent: true,
+                        opacity: 0.7,
+                        depthWrite: false
+                    });
+                    const asteroidBelt = new THREE.Points(asteroidGeometry, asteroidMaterial);
+                    scene.add(asteroidBelt);
+
+                    // k. Ambient Space Dust/Background Stars (Orbiting Sun far out)
+                    const starCount = 3000;
+                    const starsGeometry = new THREE.BufferGeometry();
+                    const starsPositions = new Float32Array(starCount * 3);
+                    for (let i = 0; i < starCount * 3; i++) {
+                        starsPositions[i] = (Math.random() - 0.5) * 20000;
+                    }
+                    starsGeometry.setAttribute('position', new THREE.BufferAttribute(starsPositions, 3));
+                    const starsMaterial = new THREE.PointsMaterial({
+                        size: 3,
+                        color: 0xffffff,
+                        transparent: true,
+                        opacity: 0.8,
+                        blending: THREE.AdditiveBlending,
+                        depthWrite: false
+                    });
+                    const starField = new THREE.Points(starsGeometry, starsMaterial);
+                    scene.add(starField);
+
+                    // l. Cinematic Meteors / Shooting Stars (Zipping across screen)
+                    const meteorCount = 8;
+                    const meteors = [];
+                    const meteorDir = new THREE.Vector3(-0.7, -0.5, -0.5).normalize();
+
+                    for (let i = 0; i < meteorCount; i++) {
+                        const mGeometry = new THREE.BufferGeometry();
+                        const mVertices = new Float32Array([
+                            0, 0, 0,
+                            0, 0, -120
+                        ]);
+                        mGeometry.setAttribute('position', new THREE.BufferAttribute(mVertices, 3));
+                        
+                        const mMaterial = new THREE.LineBasicMaterial({
+                            color: 0xffeedd,
+                            transparent: true,
+                            opacity: 0
+                        });
+                        
+                        const meteorLine = new THREE.Line(mGeometry, mMaterial);
+                        scene.add(meteorLine);
+
+                        meteors.push({
+                            mesh: meteorLine,
+                            material: mMaterial,
+                            speed: 35 + Math.random() * 25,
+                            active: false,
+                            delay: Math.random() * 300,
+                            life: 0
+                        });
+                    }
+
+                    // m. Real-Time Orbit Animation Loop
+                    const animateSolarSystem = () => {
+                        const time = Date.now() * 0.00005;
+
+                        // Rotate planets on their axes
+                        sun.rotation.y += 0.001;
+                        mercury.rotation.y += 0.003;
+                        venus.rotation.y += 0.001;
+                        mars.rotation.y += 0.002;
+                        jupiter.rotation.y += 0.004;
+                        saturn.rotation.y += 0.003;
+                        uranus.rotation.y += 0.002;
+                        neptune.rotation.y += 0.002;
+
+                        // Orbit around the Sun (anchored at sun's position)
+                        const sunX = sun.position.x;
+                        const sunY = sun.position.y;
+                        const sunZ = sun.position.z;
+
+                        // Mercury
+                        mercury.position.x = sunX + Math.cos(time * 3.5) * 1100;
+                        mercury.position.z = sunZ + Math.sin(time * 3.5) * 1100;
+                        mercury.position.y = sunY + Math.sin(time * 3.5) * 50;
+
+                        // Venus
+                        venus.position.x = sunX + Math.cos(time * 2.2 + 1.2) * 1700;
+                        venus.position.z = sunZ + Math.sin(time * 2.2 + 1.2) * 1700;
+                        venus.position.y = sunY + Math.cos(time * 2.2 + 1.2) * 80;
+
+                        // Mars
+                        mars.position.x = sunX + Math.cos(time * 1.3 + 2.5) * 2500;
+                        mars.position.z = sunZ + Math.sin(time * 1.3 + 2.5) * 2500;
+                        mars.position.y = sunY + Math.sin(time * 1.3 + 2.5) * 120;
+
+                        // Jupiter
+                        jupiter.position.x = sunX + Math.cos(time * 0.65 + 4.0) * 3800;
+                        jupiter.position.z = sunZ + Math.sin(time * 0.65 + 4.0) * 3800;
+                        jupiter.position.y = sunY + Math.sin(time * 0.65 + 4.0) * 200;
+
+                        // Saturn
+                        saturnGroup.position.x = sunX + Math.cos(time * 0.35 + 0.5) * 5400;
+                        saturnGroup.position.z = sunZ + Math.sin(time * 0.35 + 0.5) * 5400;
+                        saturnGroup.position.y = sunY - 200 + Math.sin(time * 0.35 + 0.5) * 300;
+
+                        // Uranus
+                        uranusGroup.position.x = sunX + Math.cos(time * 0.18 + 1.8) * 7200;
+                        uranusGroup.position.z = sunZ + Math.sin(time * 0.18 + 1.8) * 7200;
+                        uranusGroup.position.y = sunY + 100 + Math.sin(time * 0.18 + 1.8) * 400;
+
+                        // Neptune
+                        neptune.position.x = sunX + Math.cos(time * 0.08 + 3.1) * 8800;
+                        neptune.position.z = sunZ + Math.sin(time * 0.08 + 3.1) * 8800;
+                        neptune.position.y = sunY - 100 + Math.sin(time * 0.08 + 3.1) * 450;
+
+                        // Asteroid Belt and Star Field rotate around the Sun
+                        asteroidBelt.position.copy(sun.position);
+                        asteroidBelt.rotation.y += 0.0002;
+
+                        starField.position.copy(sun.position);
+                        starField.rotation.y += 0.00005;
+
+                        // Animate Meteors
+                        meteors.forEach(m => {
+                            if (!m.active) {
+                                m.delay--;
+                                if (m.delay <= 0) {
+                                    // Spawn meteor in a wide bounding box in the scene foreground/midground
+                                    m.mesh.position.set(
+                                        (Math.random() - 0.5) * 6000,
+                                        1500 + Math.random() * 1000,
+                                        (Math.random() - 0.5) * 6000
+                                    );
+                                    m.mesh.lookAt(m.mesh.position.clone().add(meteorDir));
+                                    m.active = true;
+                                    m.life = 40 + Math.random() * 40;
+                                    m.material.opacity = 0.8;
+                                }
+                            } else {
+                                // Move along the direction vector
+                                m.mesh.position.addScaledVector(meteorDir, m.speed);
+                                m.life--;
+                                if (m.life <= 0) {
+                                    m.active = false;
+                                    m.material.opacity = 0;
+                                    m.delay = 100 + Math.random() * 300;
+                                }
+                            }
+                        });
+
+                        requestAnimationFrame(animateSolarSystem);
+                    };
+                    animateSolarSystem();
+                }
+            }, 1000);
+
             // Resize support
             window.addEventListener('resize', () => {
-                const el = document.getElementById('globeViz');
-                if(el) {
+                if(el && GlobeObj) {
                     GlobeObj.width(el.clientWidth);
                     GlobeObj.height(el.clientHeight);
                 }
             });
-        });
+        }
+
+        // Run initialization
+        initMissionsMap();
     </script>
 </body>
 </html>

@@ -16,6 +16,7 @@
     "jimp": "^0.16.1",
     "nodemailer": "^9.0.1",
     "paystack-node": "^0.3.0",
+    "puppeteer": "^25.1.0",
     "supabase": "^2.106.0"
   },
   "devDependencies": {
