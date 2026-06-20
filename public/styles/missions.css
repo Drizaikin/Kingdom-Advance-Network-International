@@ -37,4 +37,24 @@
     border-radius: var(--radius-lg);
     margin-top: 32px;
     border: 1px solid rgba(255,255,255,0.05);
+    color: var(--white);
+}
+
+.mission-field-card h3,
+.mission-field-card h4 {
+    color: var(--white);
+}
+
+.mission-field-card p {
+    color: var(--text-muted);
+}
+
+/* Map container dark background: force white/readable text */
+.map-container h2 {
+    color: var(--white);
+    font-family: var(--font-heading);
+}
+
+.map-container p {
+    color: rgba(255, 255, 255, 0.7);
 }

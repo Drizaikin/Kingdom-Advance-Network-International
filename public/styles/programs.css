@@ -53,6 +53,8 @@
 
 .program-content {
     padding: 32px;
+    /* Explicitly set readable dark text for white card background */
+    color: var(--text-primary);
 }
 
 .program-title {
@@ -66,4 +68,18 @@
     color: var(--text-secondary);
     line-height: 1.6;
     margin-bottom: 24px;
+}
+
+/* Btn-outline on white card: use primary navy color for border & text */
+.section-light .btn-outline,
+.modern-card .btn-outline {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.section-light .btn-outline:hover,
+.modern-card .btn-outline:hover {
+    background: var(--primary);
+    color: var(--white);
+    border-color: var(--primary);
 }

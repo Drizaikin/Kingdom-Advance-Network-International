@@ -21,7 +21,8 @@ body {
 
 /* Typography Reset & Defaults */
 h1, h2, h3, h4, h5, h6 {
-  color: var(--white);
+  /* Inherit from parent so dark/light sections control heading color contextually */
+  color: inherit;
   font-weight: 700;
   line-height: 1.2;
 }
@@ -92,16 +93,58 @@ img {
   color: var(--text-primary);
 }
 
+/* In light sections, all headings use dark text for readability */
 .section-light h1,
 .section-light h2,
 .section-light h3,
 .section-light h4,
-.section-light h5 {
+.section-light h5,
+.section-light h6 {
   color: var(--text-primary);
 }
 
 .section-light p {
   color: var(--text-secondary);
+}
+
+/* Dark sections: explicit white headings for safety */
+.section-dark h1,
+.section-dark h2,
+.section-dark h3,
+.section-dark h4,
+.section-dark h5,
+.section-dark h6 {
+  color: var(--white);
+}
+
+.section-dark p {
+  color: var(--text-muted);
+}
+
+/* Hero sections always have white text */
+.hero-home,
+.page-hero,
+.about-hero,
+.founder-hero,
+.programs-hero,
+.events-hero,
+.missions-hero,
+.partnership-hero,
+.contact-hero {
+  color: var(--white);
+}
+
+.hero-home h1,
+.hero-home h2,
+.hero-home h3,
+.page-hero h1,
+.page-hero h2,
+.page-hero h3,
+.about-hero h1,
+.about-hero h2,
+.founder-hero h1,
+.founder-hero h2 {
+  color: var(--white);
 }
 
 .section-gradient {
@@ -285,11 +328,31 @@ img {
 }
 
 .text-gold {
-  color: var(--gold);
+  color: var(--gold) !important;
 }
 
 .text-teal {
-  color: var(--teal-light);
+  color: var(--teal-light) !important;
+}
+
+.text-white {
+  color: var(--white) !important;
+}
+
+.text-light {
+  color: var(--text-light) !important;
+}
+
+.text-muted {
+  color: var(--text-muted) !important;
+}
+
+.text-primary-color {
+  color: var(--text-primary) !important;
+}
+
+.text-secondary-color {
+  color: var(--text-secondary) !important;
 }
 
 /* Custom form elements basic styles (for consistent inputs) */

@@ -88,3 +88,15 @@
     color: var(--teal);
     font-weight: bold;
 }
+
+/* Partner portal card: dark background inside a light section — needs explicit white heading */
+.partner-portal-card h3,
+.partner-portal-card .auth-title {
+    color: var(--white);
+}
+
+/* The section-light auth card is styled as .card (dark bg) so headings need white */
+.section-light .card h3,
+.section-light .card h2 {
+    color: var(--white);
+}

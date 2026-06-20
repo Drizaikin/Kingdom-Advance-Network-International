@@ -77,6 +77,20 @@
   color: var(--text-muted);
 }
 
+/* In dark sections, all headings must be white for contrast */
+.section-dark h1,
+.section-dark h2,
+.section-dark h3,
+.section-dark h4,
+.section-dark h5,
+.section-dark h6 {
+  color: var(--white);
+}
+
+.section-dark p {
+  color: var(--text-muted);
+}
+
 .section-light .section-subtitle {
   color: var(--text-secondary);
 }
@@ -298,11 +312,23 @@
 }
 
 .text-gold {
-  color: var(--gold);
+  color: var(--gold) !important;
 }
 
 .text-teal {
-  color: var(--teal-light);
+  color: var(--teal-light) !important;
+}
+
+.text-white {
+  color: var(--white) !important;
+}
+
+.text-light {
+  color: var(--text-light) !important;
+}
+
+.text-muted {
+  color: var(--text-muted) !important;
 }
 
 /* Keyframe Animations */

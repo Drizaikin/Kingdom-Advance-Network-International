@@ -78,8 +78,8 @@
             <div class="container">
                 <div class="map-container" data-aos="fade-up">
                     <div style="text-align: center; margin-bottom: 24px;">
-                        <h2 style="font-family: var(--font-heading); color: var(--white); font-size: 2rem;">Our Global Footprint</h2>
-                        <p style="color: var(--text-muted);">Interactive map showing our active mission fields across 42 nations.</p>
+                        <h2 class="text-white">Our Global Footprint</h2>
+                        <p>Interactive map showing our active mission fields across 42 nations.</p>
                     </div>
                     <div id="globeViz" class="map-placeholder" style="height: 60vh; max-height: 600px; min-height: 400px; width: 100%; border-radius: var(--radius-xl); overflow: hidden; background: #000;">
                         <!-- Globe will render here -->
@@ -161,37 +161,59 @@
     <script src="js/navigation.js"></script>
     <script src="js/main.js"></script>
     <script>
-        // Initialize Globe
-        const N = 20; // Generate random mission locations
-        const gData = [...Array(N).keys()].map(() => ({
-            lat: (Math.random() - 0.5) * 180,
-            lng: (Math.random() - 0.5) * 360,
-            size: Math.random() * 0.5 + 0.1,
-            color: ['#d4a017', '#1a8a94', '#4fc3c7'][Math.round(Math.random() * 2)]
-        }));
+        document.addEventListener('DOMContentLoaded', async () => {
+            let gData = [];
+            try {
+                // Fetch real locations from events API
+                const res = await fetch('/api/events?all_dates=true');
+                const result = await res.json();
+                
+                if (result.success && result.data) {
+                    gData = result.data
+                        .filter(ev => ev.latitude && ev.longitude)
+                        .map(ev => ({
+                            lat: parseFloat(ev.latitude),
+                            lng: parseFloat(ev.longitude),
+                            size: 0.3, // You can make this dynamic based on event capacity
+                            color: '#d4a017', // Gold color for KANI brand
+                            title: ev.title
+                        }));
+                }
+            } catch (err) {
+                console.error("Failed to load map data", err);
+            }
 
-        const GlobeObj = Globe()
-            (document.getElementById('globeViz'))
-            .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
-            .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
-            .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
-            .labelsData(gData)
-            .labelLat('lat')
-            .labelLng('lng')
-            .labelText(() => 'Mission Active')
-            .labelSize('size')
-            .labelDotRadius(0.8)
-            .labelColor('color')
-            .labelResolution(2);
+            // Fallback if no real data yet
+            if (gData.length === 0) {
+                gData = [{ lat: -1.286389, lng: 36.817223, size: 0.4, color: '#d4a017', title: 'KANI HQ (Nairobi)' }];
+            }
 
-        // Auto-rotate
-        GlobeObj.controls().autoRotate = true;
-        GlobeObj.controls().autoRotateSpeed = 0.5;
+            const GlobeObj = Globe()
+                (document.getElementById('globeViz'))
+                .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
+                .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
+                .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+                .labelsData(gData)
+                .labelLat('lat')
+                .labelLng('lng')
+                .labelText('title')
+                .labelSize('size')
+                .labelDotRadius(0.8)
+                .labelColor('color')
+                .labelResolution(2);
 
-        // Resize support
-        window.addEventListener('resize', () => {
-            GlobeObj.width(document.getElementById('globeViz').clientWidth);
-            GlobeObj.height(document.getElementById('globeViz').clientHeight);
+            // Auto-rotate
+            GlobeObj.controls().autoRotate = true;
+            GlobeObj.controls().autoRotateSpeed = 0.5;
+
+            // Resize support
+            window.addEventListener('resize', () => {
+                const el = document.getElementById('globeViz');
+                if(el) {
+                    GlobeObj.width(el.clientWidth);
+                    GlobeObj.height(el.clientHeight);
+                }
+            });
         });
     </script>
 </body>

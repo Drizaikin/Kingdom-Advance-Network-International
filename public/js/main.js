@@ -385,9 +385,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         statusDiv.style.display = 'block';
                     }
                 }
-            } catch {
+            } catch (err) {
                 if (statusDiv) {
-                    statusDiv.textContent = '❌ Network error. Please try again.';
+                    statusDiv.textContent = '❌ Error: ' + err.message + ' (Make sure you are running on http://localhost:3000)';
                     statusDiv.style.color = '#ef4444';
                     statusDiv.style.display = 'block';
                 }
@@ -398,3 +398,57 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// ──────────────────────────────────────────────
+// SUPABASE REAL-TIME SYNC
+// ──────────────────────────────────────────────
+(async function initRealtime() {
+    try {
+        // 1. Fetch config from server
+        const res = await fetch('/api/config');
+        if (!res.ok) return;
+        const config = await res.json();
+        
+        if (!config.supabaseUrl || !config.supabaseAnonKey) return;
+
+        // 2. Dynamically load Supabase script
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+        script.onload = () => {
+            const supabase = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+
+            // 3. Subscribe to all relevant tables
+            supabase.channel('public-updates')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'events' }, payload => {
+                    console.log('Realtime Event change:', payload);
+                    if (window.location.pathname.includes('events.html') && typeof loadEvents === 'function') {
+                        loadEvents();
+                    } else if (window.location.pathname.includes('missions.html')) {
+                        // Reload map data
+                        window.location.reload(); 
+                    } else if (window.location.pathname.includes('dashboard.html') && typeof loadDashboard === 'function') {
+                        loadDashboard(); // Refresh partner dashboard events
+                    }
+                })
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'blogs' }, payload => {
+                    console.log('Realtime Blog change:', payload);
+                    if (window.location.pathname.includes('blogs.html') && typeof loadBlogs === 'function') {
+                        loadBlogs();
+                    }
+                })
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'prayer_requests' }, payload => {
+                    if (window.location.pathname.includes('dashboard.html') && typeof loadDashboard === 'function') {
+                        loadDashboard(); // Refresh partner prayers
+                    }
+                })
+                .subscribe((status) => {
+                    if (status === 'SUBSCRIBED') {
+                        console.log('✅ Supabase Realtime Connected! Platform is synced.');
+                    }
+                });
+        };
+        document.head.appendChild(script);
+    } catch (err) {
+        console.error('Realtime sync failed to initialize:', err);
+    }
+})();

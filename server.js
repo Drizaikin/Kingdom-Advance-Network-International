@@ -129,6 +129,16 @@ app.get('/api/health', (req, res) => {
 });
 
 // ──────────────────────────────────────────────
+// Config for Frontend (Realtime)
+// ──────────────────────────────────────────────
+app.get('/api/config', (req, res) => {
+    res.json({
+        supabaseUrl: process.env.SUPABASE_URL,
+        supabaseAnonKey: process.env.SUPABASE_ANON_KEY
+    });
+});
+
+// ──────────────────────────────────────────────
 // 1. CONTACT FORM
 // ──────────────────────────────────────────────
 app.post('/api/contact', formLimiter, async (req, res) => {
@@ -183,8 +193,12 @@ app.get('/api/events', async (req, res) => {
             .from('events')
             .select('*')
             .eq('is_active', true)
-            .gte('event_date', new Date().toISOString())
             .order('event_date', { ascending: true });
+            
+        if (req.query.all_dates !== 'true') {
+            query = query.gte('event_date', new Date().toISOString());
+        }
+
         if (type && type !== 'All') {
             query = query.eq('type', type);
         }
@@ -752,14 +766,28 @@ app.get('/api/admin/events', authenticateAdmin, async (req, res) => {
 
 // Admin: create event
 app.post('/api/admin/events', authenticateAdmin, async (req, res) => {
-    const { title, description, event_date, end_date, location, type, capacity, is_online, online_link } = req.body;
+    const { title, description, event_date, end_date, location, type, capacity, is_online, online_link, latitude, longitude, social_platforms } = req.body;
     if (!title || !event_date || !location || !type) {
         return res.status(400).json({ success: false, error: 'Title, date, location, and type are required.' });
     }
     try {
         const { data, error } = await supabaseAdmin
             .from('events')
-            .insert([{ title: sanitize(title), description: sanitize(description), event_date, end_date: end_date || null, location: sanitize(location), type: sanitize(type), capacity: capacity ? parseInt(capacity) : null, is_online: !!is_online, online_link: sanitize(online_link), is_active: true }])
+            .insert([{ 
+                title: sanitize(title), 
+                description: sanitize(description), 
+                event_date, 
+                end_date: end_date || null, 
+                location: sanitize(location), 
+                type: sanitize(type), 
+                capacity: capacity ? parseInt(capacity) : null, 
+                is_online: !!is_online, 
+                online_link: sanitize(online_link), 
+                latitude: latitude ? parseFloat(latitude) : null,
+                longitude: longitude ? parseFloat(longitude) : null,
+                social_platforms: Array.isArray(social_platforms) ? social_platforms : [],
+                is_active: true 
+            }])
             .select().single();
         if (error) throw error;
         res.status(201).json({ success: true, data });
@@ -770,15 +798,121 @@ app.post('/api/admin/events', authenticateAdmin, async (req, res) => {
 
 // Admin: update event
 app.put('/api/admin/events/:id', authenticateAdmin, async (req, res) => {
-    const { title, description, event_date, end_date, location, type, capacity, is_online, online_link, is_active } = req.body;
+    const { title, description, event_date, end_date, location, type, capacity, is_online, online_link, is_active, latitude, longitude, social_platforms } = req.body;
     try {
         const { data, error } = await supabaseAdmin
             .from('events')
-            .update({ title: sanitize(title), description: sanitize(description), event_date, end_date: end_date || null, location: sanitize(location), type: sanitize(type), capacity: capacity ? parseInt(capacity) : null, is_online: !!is_online, online_link: sanitize(online_link), is_active: is_active !== undefined ? is_active : true })
+            .update({ 
+                title: sanitize(title), 
+                description: sanitize(description), 
+                event_date, 
+                end_date: end_date || null, 
+                location: sanitize(location), 
+                type: sanitize(type), 
+                capacity: capacity ? parseInt(capacity) : null, 
+                is_online: !!is_online, 
+                online_link: sanitize(online_link), 
+                latitude: latitude ? parseFloat(latitude) : null,
+                longitude: longitude ? parseFloat(longitude) : null,
+                social_platforms: Array.isArray(social_platforms) ? social_platforms : [],
+                is_active: is_active !== undefined ? is_active : true 
+            })
             .eq('id', req.params.id)
             .select().single();
         if (error) throw error;
         res.json({ success: true, data });
+    } catch (err) {
+        res.status(400).json({ success: false, error: err.message });
+    }
+});
+
+// ──────────────────────────────────────────────
+// TEACHINGS & BLOGS
+// ──────────────────────────────────────────────
+
+// Public: Get published blogs
+app.get('/api/blogs', async (req, res) => {
+    if (!supabase) return res.status(500).json({ error: 'Database not configured' });
+    try {
+        const { data, error } = await supabase
+            .from('blogs')
+            .select('*')
+            .eq('is_published', true)
+            .order('created_at', { ascending: false });
+        if (error) throw error;
+        res.status(200).json({ success: true, data });
+    } catch (err) {
+        res.status(400).json({ success: false, error: err.message });
+    }
+});
+
+// Admin: Get all blogs
+app.get('/api/admin/blogs', authenticateAdmin, async (req, res) => {
+    try {
+        const { data, error } = await supabaseAdmin
+            .from('blogs')
+            .select('*')
+            .order('created_at', { ascending: false });
+        if (error) throw error;
+        res.json({ success: true, data });
+    } catch (err) {
+        res.status(400).json({ success: false, error: err.message });
+    }
+});
+
+// Admin: Create blog
+app.post('/api/admin/blogs', authenticateAdmin, async (req, res) => {
+    const { title, content, author, image_url, is_published } = req.body;
+    if (!title || !content) {
+        return res.status(400).json({ success: false, error: 'Title and content are required.' });
+    }
+    try {
+        const { data, error } = await supabaseAdmin
+            .from('blogs')
+            .insert([{ 
+                title: sanitize(title), 
+                content, 
+                author: sanitize(author) || 'Admin', 
+                image_url: sanitize(image_url), 
+                is_published: is_published !== undefined ? !!is_published : true 
+            }])
+            .select().single();
+        if (error) throw error;
+        res.status(201).json({ success: true, data });
+    } catch (err) {
+        res.status(400).json({ success: false, error: err.message });
+    }
+});
+
+// Admin: Update blog
+app.put('/api/admin/blogs/:id', authenticateAdmin, async (req, res) => {
+    const { title, content, author, image_url, is_published } = req.body;
+    try {
+        const { data, error } = await supabaseAdmin
+            .from('blogs')
+            .update({ 
+                title: sanitize(title), 
+                content, 
+                author: sanitize(author), 
+                image_url: sanitize(image_url), 
+                is_published: !!is_published,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', req.params.id)
+            .select().single();
+        if (error) throw error;
+        res.json({ success: true, data });
+    } catch (err) {
+        res.status(400).json({ success: false, error: err.message });
+    }
+});
+
+// Admin: Delete blog
+app.delete('/api/admin/blogs/:id', authenticateAdmin, async (req, res) => {
+    try {
+        const { error } = await supabaseAdmin.from('blogs').delete().eq('id', req.params.id);
+        if (error) throw error;
+        res.json({ success: true, message: 'Blog deleted.' });
     } catch (err) {
         res.status(400).json({ success: false, error: err.message });
     }

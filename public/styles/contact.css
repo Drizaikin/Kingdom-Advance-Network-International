@@ -27,11 +27,26 @@
     box-shadow: var(--shadow-xl);
 }
 
+/* All headings inside the dark info card must be white */
+.contact-info-card h4,
+.contact-info-card h3,
+.contact-info-card h2 {
+    color: var(--white);
+}
+
 .contact-form-card {
     background: var(--white);
     padding: 48px;
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-xl);
+    /* All text inside white card must be dark */
+    color: var(--text-primary);
+}
+
+.contact-form-card h2,
+.contact-form-card h3,
+.contact-form-card h4 {
+    color: var(--primary);
 }
 
 .info-item {
@@ -49,10 +64,11 @@
     margin-bottom: 8px;
     font-family: var(--font-heading);
     font-size: 1.25rem;
+    color: var(--white);
 }
 
 .info-text p {
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.7);
     line-height: 1.6;
 }
 
@@ -83,3 +99,46 @@
     background: var(--white);
     box-shadow: 0 0 0 4px rgba(26,138,148,0.1);
 }
+
+/* Social Media Buttons */
+.social-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    color: var(--white);
+    text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.social-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.social-btn:hover {
+    transform: translateY(-5px) scale(1.1);
+    color: var(--white);
+}
+
+.social-btn:hover::before {
+    opacity: 1;
+}
+
+.social-fb { background: #3b5998; }
+.social-fb:hover { box-shadow: 0 8px 15px rgba(59, 89, 152, 0.4); }
+
+.social-ig { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+.social-ig:hover { box-shadow: 0 8px 15px rgba(220, 39, 67, 0.4); }
+
+.social-yt { background: #FF0000; }
+.social-yt:hover { box-shadow: 0 8px 15px rgba(255, 0, 0, 0.4); }

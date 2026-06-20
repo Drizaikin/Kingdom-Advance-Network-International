@@ -127,6 +127,7 @@
             case 'donations': return loadDonations();
             case 'partners': return loadPartners();
             case 'newsletter': return loadNewsletter();
+            case 'blogs': return loadBlogs();
         }
     }
 
@@ -234,6 +235,11 @@
                 document.getElementById('evLocation').value = ev.location || '';
                 document.getElementById('evType').value = ev.type || 'General';
                 document.getElementById('evCapacity').value = ev.capacity || '';
+                document.getElementById('evLatitude').value = ev.latitude || '';
+                document.getElementById('evLongitude').value = ev.longitude || '';
+                document.getElementById('evSocialFB').checked = ev.social_platforms?.includes('facebook');
+                document.getElementById('evSocialIG').checked = ev.social_platforms?.includes('instagram');
+                document.getElementById('evSocialYT').checked = ev.social_platforms?.includes('youtube');
                 document.getElementById('evIsOnline').checked = !!ev.is_online;
                 document.getElementById('evIsActive').checked = !!ev.is_active;
                 document.getElementById('evOnlineLink').value = ev.online_link || '';
@@ -258,6 +264,11 @@
         const statusEl = document.getElementById('eventFormStatus');
         const eventId = document.getElementById('eventFormId').value;
 
+        const platforms = [];
+        if (document.getElementById('evSocialFB').checked) platforms.push('facebook');
+        if (document.getElementById('evSocialIG').checked) platforms.push('instagram');
+        if (document.getElementById('evSocialYT').checked) platforms.push('youtube');
+
         const payload = {
             title: document.getElementById('evTitle').value.trim(),
             description: document.getElementById('evDescription').value.trim(),
@@ -266,6 +277,9 @@
             location: document.getElementById('evLocation').value.trim(),
             type: document.getElementById('evType').value,
             capacity: document.getElementById('evCapacity').value || null,
+            latitude: document.getElementById('evLatitude').value || null,
+            longitude: document.getElementById('evLongitude').value || null,
+            social_platforms: platforms,
             is_online: document.getElementById('evIsOnline').checked,
             online_link: document.getElementById('evOnlineLink').value.trim() || null,
             is_active: document.getElementById('evIsActive').checked,
@@ -709,6 +723,133 @@
             }).join('')}
             </tbody></table>`;
     }
+
+    // ──────────────────────────────────────────────
+    // BLOGS & TEACHINGS
+    // ──────────────────────────────────────────────
+    let allBlogs = [];
+    async function loadBlogs() {
+        const el = document.getElementById('blogsTable');
+        el.innerHTML = loadingHtml();
+        try {
+            const res = await fetch('/api/admin/blogs', { headers: adminHeaders() });
+            const result = await res.json();
+            if (!result.success) throw new Error(result.error);
+            allBlogs = result.data || [];
+            renderBlogsTable(allBlogs);
+            cache['blogs'] = true;
+        } catch (err) {
+            el.innerHTML = errorHtml(err.message);
+        }
+    }
+
+    function renderBlogsTable(blogs) {
+        const el = document.getElementById('blogsTable');
+        if (!blogs.length) { el.innerHTML = emptyState('📖', 'No teachings found. Create one!'); return; }
+        el.innerHTML = `<table>
+            <thead><tr><th>Title</th><th>Author</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+            <tbody>
+            ${blogs.map(b => {
+                const date = new Date(b.created_at).toLocaleDateString('en-KE', { day: 'numeric', month: 'short', year: 'numeric' });
+                return `<tr>
+                    <td style="font-weight:600;max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${b.title}">${b.title}</td>
+                    <td class="text-muted">${b.author || 'Admin'}</td>
+                    <td><span class="badge badge-${b.is_published ? 'active' : 'inactive'}">${b.is_published ? 'Published' : 'Draft'}</span></td>
+                    <td class="text-muted">${date}</td>
+                    <td>
+                        <div class="actions">
+                            <button class="btn btn-ghost" style="padding:5px 10px;font-size:0.8rem;" onclick="openBlogModal('${b.id}')">Edit</button>
+                            <button class="btn btn-danger" style="padding:5px 10px;font-size:0.8rem;" onclick="deleteBlog('${b.id}', '${b.title.replace(/'/g, "\\'")}')">Delete</button>
+                        </div>
+                    </td>
+                </tr>`;
+            }).join('')}
+            </tbody></table>`;
+    }
+
+    window.openBlogModal = function(id) {
+        const modal = document.getElementById('blogModal');
+        const form = document.getElementById('blogForm');
+        form.reset();
+        document.getElementById('blogFormStatus').style.display = 'none';
+        document.getElementById('blogFormId').value = id || '';
+        if (id) {
+            document.getElementById('blogModalTitle').textContent = 'Edit Teaching';
+            document.getElementById('blogFormBtn').textContent = 'Save Changes';
+            const b = allBlogs.find(x => x.id === id);
+            if (b) {
+                document.getElementById('blTitle').value = b.title || '';
+                document.getElementById('blContent').value = b.content || '';
+                document.getElementById('blImage').value = b.image_url || '';
+                document.getElementById('blIsPublished').checked = !!b.is_published;
+            }
+        } else {
+            document.getElementById('blogModalTitle').textContent = 'Create Teaching';
+            document.getElementById('blogFormBtn').textContent = 'Publish';
+            document.getElementById('blIsPublished').checked = true;
+        }
+        modal.classList.add('open');
+    };
+
+    window.closeBlogModal = function() {
+        document.getElementById('blogModal').classList.remove('open');
+    };
+
+    window.submitBlogForm = async function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('blogFormBtn');
+        const statusEl = document.getElementById('blogFormStatus');
+        const blogId = document.getElementById('blogFormId').value;
+        const payload = {
+            title: document.getElementById('blTitle').value.trim(),
+            content: document.getElementById('blContent').value.trim(),
+            image_url: document.getElementById('blImage').value.trim() || null,
+            is_published: document.getElementById('blIsPublished').checked
+        };
+        btn.textContent = 'Saving...';
+        btn.disabled = true;
+        statusEl.style.display = 'none';
+        try {
+            const method = blogId ? 'PUT' : 'POST';
+            const url = blogId ? \`/api/admin/blogs/\${blogId}\` : '/api/admin/blogs';
+            const res = await fetch(url, { method, headers: adminHeaders(), body: JSON.stringify(payload) });
+            const result = await res.json();
+            if (result.success) {
+                toast(\`Blog \${blogId ? 'updated' : 'created'} successfully! ✅\`, 'success');
+                closeBlogModal();
+                delete cache['blogs'];
+                loadBlogs();
+            } else {
+                statusEl.textContent = '❌ ' + result.error;
+                statusEl.className = 'form-status error';
+                statusEl.style.display = 'block';
+            }
+        } catch (err) {
+            statusEl.textContent = '❌ Network error.';
+            statusEl.className = 'form-status error';
+            statusEl.style.display = 'block';
+        } finally {
+            btn.textContent = blogId ? 'Save Changes' : 'Publish';
+            btn.disabled = false;
+        }
+    };
+
+    window.deleteBlog = async function(id, title) {
+        if (!confirm(\`Delete "\${title}" permanently?\`)) return;
+        try {
+            const res = await fetch(\`/api/admin/blogs/\${id}\`, { method: 'DELETE', headers: adminHeaders() });
+            const result = await res.json();
+            if (result.success) {
+                toast('Blog deleted. ✅', 'success');
+                delete cache['blogs'];
+                loadBlogs();
+            } else {
+                toast('Error: ' + result.error, 'error');
+            }
+        } catch (err) {
+            toast('Network error.', 'error');
+        }
+    };
 
     // ──────────────────────────────────────────────
     // HELPERS

@@ -96,6 +96,20 @@
     z-index: -1;
 }
 
+/* Founder content in section-light needs dark text */
+.founder-content .section-label {
+    color: var(--teal-dark);
+}
+
+.founder-content .section-title {
+    color: var(--text-primary);
+}
+
+.founder-content .section-subtitle {
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
 /* Event Cards */
 .event-card-list {
     display: flex;
